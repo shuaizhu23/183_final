@@ -1,0 +1,124 @@
+[[extend 'layout.html']]
+
+<style>
+  [v-cloak] {display: none;}
+  .hidden {display:none;}
+  .outline-icon {
+    text-shadow: 0px 0px 3px #219CEF;
+    color: white;
+  }
+</style>
+
+
+<div class="section" id="vue-target" v-cloak>
+  <h1 class="title">Postlandia [[=display_full_name]]</h1>
+  <!-- display only if add_status is true-->
+  <div v-if="add_mode" class="container block">
+    <div class="form">
+      <div class="field">
+        <div class="control">
+          <textarea class="textarea" v-model="add_post_content" placeholder="Enter new post here" type="text" class="input"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input type="submit" @click="add_post" value="Post" class="button is-primary">
+          <input type="submit" @click="set_add_status(false)" value="Cancel" class="button is-warning">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container block">
+    <button @click="set_add_status(true)" class="button is-primary" style="margin-bottom: 1rem;">
+      <i class="fa fa-plus fa-fw"></i>
+    </button>
+    <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
+      <div v-for="fn in ['post_content','full_name']">
+        <div class="control">
+          <input type="text" class="input" v-model="r[fn]"
+            :class="{
+              'is-static': r._state[fn] === 'clean',
+            }"
+            :readonly="r._state[fn] === 'clean'"
+          />
+        </div>
+      </div>
+      <span @mouseenter="show_likers(true)" @mouseleave="show_likers(false)">
+        <span style="margin-right: 1rem;" class="icon is-small" @click="toggle_like(r._idx, true)"
+          :class="{
+            'outline-icon': r.liked === true,
+          }">
+          <i class="fa fa-2x fa-thumbs-up" aria-hidden="true"></i>
+        </span>
+        <span class="icon is-small" @click="toggle_like(r._idx, false)"
+          :class="{
+            'outline-icon': r.liked === false,
+          }">
+          <i class="fa fa-2x fa-thumbs-down" aria-hidden="true"></i>
+        </span>
+      </span>
+      <span v-if="likes_mode">disliked by [[=display_full_name]]</span>
+      <button :class="{
+          hidden: !r.owned
+        }"
+        @click="delete_contact(r._idx)" class="button is-danger" style="float:right;">
+        <i class="fa fa-trash"></i></button>
+    </div>
+
+  </div>
+</div>
+<div id="highlights">
+  <div class="inner">
+    <div class="point">
+      <h2>Understand Canvas Project Description</h2>
+      <p>
+        The front-end must be done in a combination of some server-generated pages, and some dynamic pages that use vue.js and AJAX. <br>
+        There should be personalized (user-dependent) information stored on the site. <br>
+        Users must be able to somehow interact using the site; so there should be at least some sharing / collaboration / buy-sell / ... activity.  The collaboration can be direct, or by modifying shared content (even a shared cart, whatever).  That is, a user should not be an independent silo.
+        The website is built in a secure way (signed URLs, input sanitation, etc). <br>
+        The data storage must happen in a mysql database for data, and blobstore for files (images, big stuff). <br>
+        The project must be hosted on Google Appengine Standard Environment for Python 3, with database on Google Cloud SQL, and blobs on Google Cloud Storage.  Instructions for the deployment will be given.
+      </p>
+    </div>
+    <div class="point">
+      <h2>Misc. Project Description</h2>
+      <p>You can choose the css framework that you most like. <br>
+        I like Bootstrap?
+        How well the web site works.  Does it solve the problem it wants to solve?  Is it well done? <br>
+        The project code.  We will look at how well written it is, how much work there actually was, how well it works.
+      </p>
+    </div>
+    <div class="point">
+      <h2>Technical Requirements</h2>
+      <p>Users must be able to log in. <br>
+      The back-end must be done in py4web. <br>
+      The project's code should be held in git, a repository will be made available.</p>
+    </div>
+    <div class="point">
+      <h2>Project Proposal</h2>
+      <p>Already know HTML, CSS and JavaScript? Read the guide and start building things in no time!</p>
+    </div>
+
+    <div class="point">
+      <h2>Components Overview</h2>
+      <p>An incrementally adoptable ecosystem that scales between a library and a full-featured framework.</p>
+    </div>
+  </div>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let load_contacts_url = "[[=XML(load_contacts_url)]]";
+  let add_post_url = "[[=XML(add_post_url)]]";
+  let delete_contact_url = "[[=XML(delete_contact_url)]]";
+  let edit_contact_url = "[[=XML(edit_contact_url)]]";
+
+  let toggle_like_url = "[[=XML(toggle_like_url)]]";
+
+  let user_email = "[[=XML(user_email)]]"
+  let display_full_name = "[[=XML(display_full_name)]]";
+</script>
+<script src="js/index.js"></script>
+[[end]]
