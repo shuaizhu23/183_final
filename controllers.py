@@ -36,7 +36,8 @@ from .models import get_user_email
 url_signer = URLSigner(session)
 
 @action('index')
-@action.uses(db, 'index.html', auth.user)
+# auth.user needs to come before index.html
+@action.uses(db, auth.user, 'index.html')
 def index():
     r = db(db.auth_user.email == get_user_email()).select().first()
     name = r.first_name + " " + r.last_name if r is not None else "Unknown"
