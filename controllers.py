@@ -32,8 +32,23 @@ from yatl.helpers import A
 from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
+from py4web.utils.form import Form, FormStyleBulma
 
 url_signer = URLSigner(session)
+
+# use py4web to help create form for me
+@action('add', method=["GET", "POST"])
+@action.uses(db, session, auth.user, 'add.html')
+def add():
+    # Insert form: no record= in it.
+    task_form = Form(db.task, csrf_session=session, formstyle=FormStyleBulma)
+    if task_form.accepted:
+        # We simply redirect; the insertion already happened.
+        redirect(URL('index'))
+
+    # Either this is a GET request, or this is a POST but not accepted = with errors.
+    return dict(form=task_form)
+    # don't create page as result of form submission
 
 @action('index')
 # auth.user needs to come before index.html

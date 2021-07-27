@@ -1,6 +1,4 @@
-"""
-This file defines the database models
-"""
+# This file defines the database models
 
 import datetime
 from .common import db, Field, auth
@@ -12,6 +10,13 @@ def get_user_email():
 def get_time():
     return datetime.datetime.utcnow()
 
+db.define_table('task',
+  Field('task_title'),
+  Field('task_done', 'boolean', default=False),
+  Field('created_by'),
+  Field('task_img'),
+  Field('task_xp', 'integer', default=50),
+  )
 
 db.define_table('contact',
     Field('post_content'),
