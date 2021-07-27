@@ -7,6 +7,20 @@
     text-shadow: 0px 0px 3px #219CEF;
     color: white;
   }
+  .genshin-text {
+    color: #86623F;
+    font-family: 'Marko One', sans-serif;
+    color: #85623F;
+    margin-bottom: 2rem;
+    font-size: 48px;
+  }
+  .col {
+    background-color: #A6D554;
+    margin-right: 1rem;
+  }
+  .incomplete {
+    background-color: grey;
+  }
 </style>
 
 
@@ -70,40 +84,45 @@
 </div>
 <div id="highlights">
   <div class="inner">
-    <div class="point">
-      <h2>Understand Canvas Project Description</h2>
-      <p>
-        The front-end must be done in a combination of some server-generated pages, and some dynamic pages that use vue.js and AJAX. <br>
-        There should be personalized (user-dependent) information stored on the site. <br>
-        Users must be able to somehow interact using the site; so there should be at least some sharing / collaboration / buy-sell / ... activity.  The collaboration can be direct, or by modifying shared content (even a shared cart, whatever).  That is, a user should not be an independent silo.
-        The website is built in a secure way (signed URLs, input sanitation, etc). <br>
-        The data storage must happen in a mysql database for data, and blobstore for files (images, big stuff). <br>
-        The project must be hosted on Google Appengine Standard Environment for Python 3, with database on Google Cloud SQL, and blobs on Google Cloud Storage.  Instructions for the deployment will be given.
-      </p>
+    <div class="container" style="background-color: #EEE6DD; width: 45rem;">
+    <h2 class="page-section-heading text-center genshin-text">Task Progress</h2>
+    <h2 class="page-section-heading text-center genshin-text" style="color: #555555">11/11</h2>
+    <div class="row" style="padding-bottom: 3rem;'">
+      <div class="col incomplete">L</div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
     </div>
-    <div class="point">
-      <h2>Misc. Project Description</h2>
-      <p>You can choose the css framework that you most like. <br>
-        I like Bootstrap?
-        How well the web site works.  Does it solve the problem it wants to solve?  Is it well done? <br>
-        The project code.  We will look at how well written it is, how much work there actually was, how well it works.
-      </p>
+    <p class="genshin-text">Rewards</p>
+    <img src="img/new_iphone.png" class="img-thumbnail" alt="..." style="width: 200px">
+    <!-- <img src="img/new_iphone.png" class="img-thumbnail" alt="..." style="width: 200px">
+    <img src="img/ultraboost.webp" class="img-thumbnail" alt="..." style="width: 200px"> -->
+    <!-- <p class="genshin-text">Rewards Claimed</p> -->
+    <div style="margin-top:5rem;">
+      <div style="height: 5rem;">
+        <img src="img/graduate.jpg" class="rounded" alt="..." style="width: 100px; float: left!important; margin-top: -1rem; margin-right: 2rem;"><p>Graduate from UCSC</p>
+        <div style="display: flex; float: right!important; margin-top: -3rem;">
+          <img src="img/exp.png" class="rounded" alt="..." style="width: 50px; margin-right: 1rem;">
+          <img src="img/new_tesla.png" class="rounded" alt="..." style="width: 100px;">
+        </div>
+      </div>
+      <div style="height: 4rem;">
+        <img src="img/graduate.jpg" class="rounded" alt="..." style="width: 100px; float: left!important; margin-top: -1rem; margin-right: 2rem;">
+        <p>Finish 2021 Tax returns</p>
+        <div style="display: flex; float: right!important; margin-top: -3rem;">
+          <img src="img/million-token.jpg" class="rounded" alt="..." style="width: 50px; margin-right: 1rem;">
+          <img src="img/ultraboost.webp" class="rounded" alt="..." style="width: 100px;">
+        </div>
+      </div>
     </div>
-    <div class="point">
-      <h2>Technical Requirements</h2>
-      <p>Users must be able to log in. <br>
-      The back-end must be done in py4web. <br>
-      The project's code should be held in git, a repository will be made available.</p>
-    </div>
-    <div class="point">
-      <h2>Project Proposal</h2>
-      <p>Already know HTML, CSS and JavaScript? Read the guide and start building things in no time!</p>
-    </div>
-
-    <div class="point">
-      <h2>Components Overview</h2>
-      <p>An incrementally adoptable ecosystem that scales between a library and a full-featured framework.</p>
-    </div>
+  </div>
   </div>
 </div>
 
