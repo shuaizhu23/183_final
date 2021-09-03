@@ -73,10 +73,6 @@ let init = (app) => {
       });
     };
 
-    app.reset_form = function () {
-        app.vue.add_post_content = "";
-    };
-
     app.delete_contact = function(row_idx) {
       /// watch array index
       /// get, dictionary encoded in url param 156
@@ -100,8 +96,9 @@ let init = (app) => {
         app.vue.add_mode = new_status;
     };
 
-    app.show_likers = function (bool) {
-        app.vue.likes_mode = bool;
+    app.set_task = (r_idx, t_bool) => {
+        let task = app.vue.rows[r_idx];
+        axios.post(set_task_done, {image_id: task.id, task_done: });
     };
 
     app.methods = {
@@ -109,7 +106,8 @@ let init = (app) => {
       set_add_status: app.set_add_status,
       delete_contact: app.delete_contact,
       show_likers: app.show_likers,
-      toggle_like: app.toggle_like
+      toggle_like: app.toggle_like,
+      set_task: app.set_task
     };
 
     // This creates the Vue instance.
@@ -120,13 +118,13 @@ let init = (app) => {
     });
 
     app.init = () => {
-        axios.get(load_contacts_url).then(function (response) {
-            app.vue.rows_c = app.decorate(app.enumerate(response.data.rows.reverse()));
-        });
+        // axios.get(load_contacts_url).then(function (response) {
+        //     app.vue.rows_c = app.decorate(app.enumerate(response.data.rows.reverse()));
+        // });
 
         axios.get(load_tasks_url).then(function (response) {
             // console.log(response)
-            app.vue.rows = response.data.rows;
+            app.vue.rows = app.enumerate(response.data.rows);
         });
     };
 
