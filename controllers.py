@@ -51,7 +51,6 @@ def add():
     # don't create page as result of form submission
 
 @action('index')
-# auth.user needs to come before index.html
 @action.uses(db, auth.user, 'index.html')
 def index():
     r = db(db.auth_user.email == get_user_email()).select().first()
@@ -61,6 +60,7 @@ def index():
         display_full_name = name,
         user_email = get_user_email(),
         load_contacts_url = URL('load_contacts', signer=url_signer),
+        load_tasks_url = URL('load_tasks', signer=url_signer),
         add_post_url = URL('add_post', signer=url_signer),
         delete_contact_url = URL('delete_contact', signer=url_signer),
         edit_contact_url = URL('edit_contact', signer=url_signer),
@@ -72,6 +72,13 @@ def index():
 @action.uses(url_signer.verify(), db)
 def load_contacts():
     rows = db(db.contact).select().as_list()
+    # print(rows)
+    return dict(rows=rows)
+
+@action('load_tasks')
+@action.uses(url_signer.verify(), db)
+def load_tasks():
+    rows = db(db.task).select().as_list()
     return dict(rows=rows)
 
 @action('add_post', method="POST")

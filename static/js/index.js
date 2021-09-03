@@ -10,8 +10,9 @@ let init = (app) => {
       add_mode: false,
       likes_mode: false,
       add_post_content: "",
-      // stored in rows
+      // contacts stored in r0ws
       rows: [],
+      rows_c: []
     };
 
     app.enumerate = (a) => {
@@ -35,7 +36,7 @@ let init = (app) => {
 
     app.toggle_like = function (r_idx, val) {
         console.log('hi', r_idx)
-        let r = app.vue.rows[r_idx];
+        let r = app.vue.rows_c[r_idx];
         r.liked = val;
         // console.log(display_full_name)
         axios.post(toggle_like_url,
@@ -56,7 +57,7 @@ let init = (app) => {
         /// db id received after inserted
         /// response.data.id
         // console.log(response)
-        app.vue.rows.unshift({
+        app.vue.rows_c.unshift({
             id: response.data.id,
             post_content: app.vue.add_post_content,
             full_name: display_full_name,
@@ -65,7 +66,7 @@ let init = (app) => {
             _state: {post_content: "clean", full_name: "clean"},
         });
         /// defined underscore index 25:53
-        app.decorate(app.enumerate(app.vue.rows));
+        app.decorate(app.enumerate(app.vue.rows_c));
         /// blank out form after submit, intersting that have to simulate html response
         app.reset_form();
         app.set_add_status(false);
@@ -79,15 +80,15 @@ let init = (app) => {
     app.delete_contact = function(row_idx) {
       /// watch array index
       /// get, dictionary encoded in url param 156
-      let id = app.vue.rows[row_idx].id;
+      let id = app.vue.rows_c[row_idx].id;
       /// not symmetrical, follow axios definition
       axios.get(delete_contact_url, {params: {id: id}}).then(function (response) {
         /// race condition with slow network?
         /// confirm intended row is deleted
-        for (let i = 0; i < app.vue.rows.length; i++) {
-            if (app.vue.rows[i].id === id) {
-                app.vue.rows.splice(i, 1);
-                app.enumerate(app.vue.rows);
+        for (let i = 0; i < app.vue.rows_c.length; i++) {
+            if (app.vue.rows_c[i].id === id) {
+                app.vue.rows_c.splice(i, 1);
+                app.enumerate(app.vue.rows_c);
                 break;
             }
         }
@@ -120,7 +121,12 @@ let init = (app) => {
 
     app.init = () => {
         axios.get(load_contacts_url).then(function (response) {
-            app.vue.rows = app.decorate(app.enumerate(response.data.rows.reverse()));
+            app.vue.rows_c = app.decorate(app.enumerate(response.data.rows.reverse()));
+        });
+
+        axios.get(load_tasks_url).then(function (response) {
+            // console.log(response)
+            app.vue.rows = response.data.rows;
         });
     };
 

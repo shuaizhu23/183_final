@@ -47,7 +47,7 @@
     <button @click="set_add_status(true)" class="button is-primary" style="margin-bottom: 1rem;">
       <i class="fa fa-plus fa-fw"></i>
     </button>
-    <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
+    <!-- <div v-for="r in rows_c" class="box" style="background-color: #F5F5F5;">
       <div v-for="fn in ['post_content','full_name']">
         <div class="control">
           <input type="text" class="input" v-model="r[fn]"
@@ -78,58 +78,19 @@
         }"
         @click="delete_contact(r._idx)" class="button is-danger" style="float:right;">
         <i class="fa fa-trash"></i></button>
+    </div> -->
+    <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
+      <p>{{r.task_title}}</p>
     </div>
-
-  </div>
-</div>
-<div id="highlights">
-  <div class="inner">
-    <div class="container" style="background-color: #EEE6DD; width: 45rem;">
-    <h2 class="page-section-heading text-center genshin-text">Task Progress</h2>
-    <h2 class="page-section-heading text-center genshin-text" style="color: #555555">11/11</h2>
-    <div class="row" style="padding-bottom: 3rem;'">
-      <div class="col incomplete">L</div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-    </div>
-    <p class="genshin-text">Rewards</p>
-    <img src="img/new_iphone.png" class="img-thumbnail" alt="..." style="width: 200px">
-    <!-- <img src="img/new_iphone.png" class="img-thumbnail" alt="..." style="width: 200px">
-    <img src="img/ultraboost.webp" class="img-thumbnail" alt="..." style="width: 200px"> -->
-    <!-- <p class="genshin-text">Rewards Claimed</p> -->
-    <div style="margin-top:5rem;">
-      <div style="height: 5rem;">
-        <img src="img/graduate.jpg" class="rounded" alt="..." style="width: 100px; float: left!important; margin-top: -1rem; margin-right: 2rem;"><p>Graduate from UCSC</p>
-        <div style="display: flex; float: right!important; margin-top: -3rem;">
-          <img src="img/exp.png" class="rounded" alt="..." style="width: 50px; margin-right: 1rem;">
-          <img src="img/new_tesla.png" class="rounded" alt="..." style="width: 100px;">
-        </div>
-      </div>
-      <div style="height: 4rem;">
-        <img src="img/graduate.jpg" class="rounded" alt="..." style="width: 100px; float: left!important; margin-top: -1rem; margin-right: 2rem;">
-        <p>Finish 2021 Tax returns</p>
-        <div style="display: flex; float: right!important; margin-top: -3rem;">
-          <img src="img/million-token.jpg" class="rounded" alt="..." style="width: 50px; margin-right: 1rem;">
-          <img src="img/ultraboost.webp" class="rounded" alt="..." style="width: 100px;">
-        </div>
-      </div>
-    </div>
-  </div>
   </div>
 </div>
 
+<!-- Removed highlights -->
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
   let load_contacts_url = "[[=XML(load_contacts_url)]]";
+  let load_tasks_url = "[[=XML(load_tasks_url)]]";
   let add_post_url = "[[=XML(add_post_url)]]";
   let delete_contact_url = "[[=XML(delete_contact_url)]]";
   let edit_contact_url = "[[=XML(edit_contact_url)]]";
