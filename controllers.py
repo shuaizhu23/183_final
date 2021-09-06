@@ -36,6 +36,11 @@ from py4web.utils.form import Form, FormStyleBulma
 
 url_signer = URLSigner(session)
 
+@action('add')
+@action.uses(db, auth, 'add.html')
+def index():
+    return dict(file_upload_url = URL('file_upload', signer=url_signer))
+
 # use py4web to help create form for me
 @action('add', method=["GET", "POST"])
 @action.uses(db, session, auth.user, 'add.html')
@@ -47,7 +52,10 @@ def add():
         redirect(URL('index'))
 
     # Either this is a GET request, or this is a POST but not accepted = with errors.
-    return dict(form=task_form)
+    return dict(
+        form=task_form,
+        file_upload_url = URL('file_upload', signer=url_signer)
+    )
     # don't create page as result of form submission
 
 @action('index')
@@ -59,13 +67,9 @@ def index():
         # This is the signed URL for the callback.
         display_full_name = name,
         user_email = get_user_email(),
-        load_contacts_url = URL('load_contacts', signer=url_signer),
         load_tasks_url = URL('load_tasks', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
-        add_post_url = URL('add_post', signer=url_signer),
-        delete_contact_url = URL('delete_contact', signer=url_signer),
-        edit_contact_url = URL('edit_contact', signer=url_signer),
-        toggle_like_url = URL('toggle_like', signer=url_signer),
+        file_upload_url = URL('file_upload', signer=url_signer)
     )
 
 # This is our very first API function.
@@ -97,3 +101,14 @@ def set_task():
         task_done=task_done
     )
     return "ok" # Just to have some confirmation in the Network tab.
+
+@action('file_upload', method="PUT")
+@action.uses() # Add here things you might want to use.
+def file_upload():
+    file_name = request.params.get("file_name")
+    file_type = request.params.get("file_type")
+    uploaded_file = request.body # This is a file, you can read it.
+    # Diagnostics
+    print("Uploaded", file_name, "of type", file_type)
+    # print("Content:", uploaded_file.read())
+    return "ok"

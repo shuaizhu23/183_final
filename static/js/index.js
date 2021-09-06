@@ -7,9 +7,10 @@ let app = {};
 // creates a Vue instance, and then initializes the Vue instance.
 let init = (app) => {
     app.data = {
-      likes_mode: false,
+      uploading: false,
+      uploaded_file: "",
+      upload_done: false,
       add_post_content: "",
-      // contacts stored in r0ws
       rows: [],
     };
 
@@ -39,8 +40,40 @@ let init = (app) => {
       axios.post(set_task_url, {id: task.id, task_done: !t_bool});
     };
 
+    app.upload_complete = function (file_name, file_type) {
+        app.vue.uploading = false;
+        app.vue.upload_done = true;
+        app.vue.uploaded_file = file_name;
+    };
+
+    app.upload_file = function (event) {
+        // We need the event to find the file.
+        let self = this;
+        // Reads the file.
+        let input = event.target;
+        // select single file and upload single file
+        let file = input.files[0];
+        if (file) {
+            self.uploading = true;
+            let file_type = file.type;
+            let file_name = file.name;
+            let full_url = file_upload_url + "&file_name=" + encodeURIComponent(file_name)
+                + "&file_type=" + encodeURIComponent(file_type);
+            // Uploads the file, using the low-level streaming interface.
+            // This avoid any encoding.
+            app.vue.uploading = true;
+            let req = new XMLHttpRequest();
+            req.addEventListener("load", function () {
+                app.upload_complete(file_name, file_type)
+            });
+            req.open("PUT", full_url, true);
+            req.send(file);
+        }
+    };
+
     app.methods = {
-      set_task: app.set_task
+      set_task: app.set_task,
+      upload_file: app.upload_file,
     };
 
     // This creates the Vue instance.
