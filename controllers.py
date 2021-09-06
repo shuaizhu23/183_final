@@ -54,6 +54,7 @@ def add():
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(
         form=task_form,
+        load_tasks_url = URL('load_tasks', signer=url_signer),
         file_upload_url = URL('file_upload', signer=url_signer)
     )
     # don't create page as result of form submission

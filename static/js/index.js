@@ -1,5 +1,5 @@
 /// server javascript, doesn't need dashboard reload
-// This will be the object that will contain the Vue attributes
+// object that will contain the Vue attributes
 // and be used to initialize it.
 let app = {};
 
@@ -7,12 +7,18 @@ let app = {};
 // creates a Vue instance, and then initializes the Vue instance.
 let init = (app) => {
     app.data = {
+      selection_done: false,
       uploading: false,
-      uploaded_file: "",
       upload_done: false,
+      uploaded: false,
+      img_url: "",
+
       add_post_content: "",
       rows: [],
     };
+
+    // file selected for upload.
+    app.file = null;
 
     app.enumerate = (a) => {
         let k = 0;
@@ -34,7 +40,7 @@ let init = (app) => {
     }
 
     app.set_task = function(r_idx, t_bool) {
-      console.log(!t_bool);
+      // console.log(!t_bool);
       let task = app.vue.rows[r_idx];
       Vue.set(task, 'task_done', !t_bool);
       axios.post(set_task_url, {id: task.id, task_done: !t_bool});
@@ -46,8 +52,29 @@ let init = (app) => {
         app.vue.uploaded_file = file_name;
     };
 
+    app.select_file = function (event) {
+        // Reads the file.
+        let input = event.target;
+        app.file = input.files[0];
+        if (app.file) {
+            app.vue.selection_done = true;
+            // We read the file from local disk
+            let reader = new FileReader();
+            reader.addEventListener("load", function () {
+                app.vue.img_url = reader.result;
+            });
+            reader.readAsDataURL(app.file);
+        }
+    };
+
+    app.upload_complete = function (file_name, file_type) {
+      app.vue.uploading = false;
+      app.vue.uploaded = true;
+    };
+
     app.upload_file = function (event) {
         // We need the event to find the file.
+        // ??
         let self = this;
         // Reads the file.
         let input = event.target;
@@ -60,7 +87,7 @@ let init = (app) => {
             let full_url = file_upload_url + "&file_name=" + encodeURIComponent(file_name)
                 + "&file_type=" + encodeURIComponent(file_type);
             // Uploads the file, using the low-level streaming interface.
-            // This avoid any encoding.
+            // avoid any encoding.
             app.vue.uploading = true;
             let req = new XMLHttpRequest();
             req.addEventListener("load", function () {
@@ -73,10 +100,11 @@ let init = (app) => {
 
     app.methods = {
       set_task: app.set_task,
+      select_file: app.select_file,
       upload_file: app.upload_file,
     };
 
-    // This creates the Vue instance.
+    // create the Vue instance.
     app.vue = new Vue({
         el: "#vue-target",
         data: app.data,
@@ -94,6 +122,5 @@ let init = (app) => {
     app.init();
 };
 
-// This takes the (empty) app object, and initializes it,
-// putting all the code i
+// takes the (empty) app object, and initializes it,
 init(app);
