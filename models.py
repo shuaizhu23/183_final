@@ -28,13 +28,13 @@ db.define_table(
   Field('task_title'),
   Field('task_difficulty', 'integer', default=2),
   Field('task_done', 'boolean', default=False),
-  Field('task_img', default='img/new_tesla.png'),
+  Field('task_img', 'text', default='img/default_task.png'),
   # hidden from user
   Field('created_by', default=get_user_email),
   Field('task_xp', 'integer', default=50),
 )
 
-db.task.task_img.readable = db.task.task_img.writable = False
+# db.task.task_img.readable = db.task.task_img.writable = False
 db.task.created_by.readable = db.task.created_by.writable = False
 db.task.task_xp.readable = db.task.task_xp.writable = False
 db.task.task_done.writable = False

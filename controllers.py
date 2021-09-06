@@ -46,18 +46,31 @@ def index():
 @action.uses(db, session, auth.user, 'add.html')
 def add():
     # Insert form: no record= in it.
-    task_form = Form(db.task, csrf_session=session, formstyle=FormStyleBulma)
-    if task_form.accepted:
+    form = Form(db.task, csrf_session=session, formstyle=FormStyleBulma)
+    form.structure.find('[name=task_img]')[0]['_class'] = 'type-integer input blue1';
+    if form.accepted:
         # We simply redirect; the insertion already happened.
         redirect(URL('index'))
 
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(
-        form=task_form,
+        form=form,
         load_tasks_url = URL('load_tasks', signer=url_signer),
         file_upload_url = URL('file_upload', signer=url_signer)
     )
     # don't create page as result of form submission
+
+@action('file_upload', method="PUT")
+@action.uses() # Add here things you might want to use.
+def file_upload():
+    file_name = request.params.get("file_name")
+    file_type = request.params.get("file_type")
+    uploaded_file = request.body # This is a file, you can read it.
+    # Diagnostics
+    print("Uploaded", file_name, "of type", file_type)
+    # print("Content:", uploaded_file.read())
+    return "ok"
+
 
 @action('index')
 @action.uses(db, auth.user, 'index.html')
@@ -102,14 +115,3 @@ def set_task():
         task_done=task_done
     )
     return "ok" # Just to have some confirmation in the Network tab.
-
-@action('file_upload', method="PUT")
-@action.uses() # Add here things you might want to use.
-def file_upload():
-    file_name = request.params.get("file_name")
-    file_type = request.params.get("file_type")
-    uploaded_file = request.body # This is a file, you can read it.
-    # Diagnostics
-    print("Uploaded", file_name, "of type", file_type)
-    # print("Content:", uploaded_file.read())
-    return "ok"

@@ -35,6 +35,24 @@
 
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
       <p>{{r.task_title}}</p>
+       <div v-if="r.task_img == 'img/default_task.png'">
+         <p>Test</p>
+        <!-- <div class="control">
+          <div class="file is-info">
+            <label class="file-label">
+              <input class="file-input" type="file"
+                     accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                     @change="upload_file($event, r._idx)">
+              <span class="file-cta">
+                <span class="file-label">
+                  <span><i class="fa fa-upload"></i></span>
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>-->
+      </div>
+      <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->
       <img v-bind:src="r.task_img" style="width: 200px">
       <!-- v-if="!r.task_done" -->
       <div @click="set_task(r._idx, r.task_done)">

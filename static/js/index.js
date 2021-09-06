@@ -67,9 +67,11 @@ let init = (app) => {
         }
     };
 
-    app.upload_complete = function (file_name, file_type) {
+    app.upload_complete = function (file_name, file_type, full_url) {
       app.vue.uploading = false;
       app.vue.uploaded = true;
+      console.log(full_url);
+      document.getElementById("task_task_img").value = full_url;
     };
 
     app.upload_file = function (event) {
@@ -91,7 +93,7 @@ let init = (app) => {
             app.vue.uploading = true;
             let req = new XMLHttpRequest();
             req.addEventListener("load", function () {
-                app.upload_complete(file_name, file_type)
+                app.upload_complete(file_name, file_type, full_url)
             });
             req.open("PUT", full_url, true);
             req.send(file);
