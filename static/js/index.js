@@ -96,16 +96,16 @@ let init = (app) => {
         app.vue.add_mode = new_status;
     };
 
-    app.set_task = (r_idx, t_bool) => {
-        let task = app.vue.rows[r_idx];
-        axios.post(set_task_done, {image_id: task.id, task_done: });
+    app.set_task = function(r_idx, t_bool) {
+      console.log(!t_bool);
+      let task = app.vue.rows[r_idx];
+      axios.post(set_task_url, {id: task.id, task_done: !t_bool});
     };
 
     app.methods = {
       add_post: app.add_post,
       set_add_status: app.set_add_status,
       delete_contact: app.delete_contact,
-      show_likers: app.show_likers,
       toggle_like: app.toggle_like,
       set_task: app.set_task
     };

@@ -61,6 +61,7 @@ def index():
         user_email = get_user_email(),
         load_contacts_url = URL('load_contacts', signer=url_signer),
         load_tasks_url = URL('load_tasks', signer=url_signer),
+        set_task_url = URL('set_task', signer=url_signer),
         add_post_url = URL('add_post', signer=url_signer),
         delete_contact_url = URL('delete_contact', signer=url_signer),
         edit_contact_url = URL('edit_contact', signer=url_signer),
@@ -80,6 +81,22 @@ def load_contacts():
 def load_tasks():
     rows = db(db.task).select().as_list()
     return dict(rows=rows)
+
+@action('set_task', method='POST')
+# remove auth.user
+@action.uses(url_signer.verify(), db)
+def set_task():
+    id = request.json.get('id')
+    task_done = request.json.get('task_done')
+    # assert image_id is not None and rating is not None
+
+    # & (db.created_by == get_user())
+    db.task.update_or_insert(
+        ((db.task.id == id)),
+        id=id,
+        task_done=task_done
+    )
+    return "ok" # Just to have some confirmation in the Network tab.
 
 @action('add_post', method="POST")
 @action.uses(url_signer.verify(), db)
