@@ -36,8 +36,12 @@
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
       <p>{{r.task_title}}</p>
       <img v-bind:src="r.task_img" style="width: 200px">
-      <div v-if="!r.task_done" @click="set_task(r._idx, r.task_done)">
-        <p>bored enough to switch editors</p>
+      <!-- v-if="!r.task_done" -->
+      <div @click="set_task(r._idx, r.task_done)">
+        <i class="fa" style="color:green"
+        :class="{'fa-check-square': r.task_done == 1,
+            'fa-square': r.task_done != 1,}">
+        </i>
       </div>
     </div>
   </div>
@@ -49,11 +53,6 @@
 <script>
   let load_tasks_url = "[[=XML(load_tasks_url)]]";
   let set_task_url = "[[=XML(set_task_url)]]";
-  let add_post_url = "[[=XML(add_post_url)]]";
-  let delete_contact_url = "[[=XML(delete_contact_url)]]";
-  let edit_contact_url = "[[=XML(edit_contact_url)]]";
-
-  let toggle_like_url = "[[=XML(toggle_like_url)]]";
 
   let user_email = "[[=XML(user_email)]]"
   let display_full_name = "[[=XML(display_full_name)]]";
