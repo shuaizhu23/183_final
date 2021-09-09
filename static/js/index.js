@@ -10,6 +10,8 @@ let init = (app) => {
       done_tasks: 0,
       total_tasks: 0,
       rows: [],
+
+      bp_progress: 30,
     };
 
     // file selected for upload.

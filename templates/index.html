@@ -25,6 +25,14 @@
 
 
 <div class="section" id="vue-target" v-cloak>
+  <div style="display:flex">
+    <h1 class="title">BP Level 9</h1>
+    <div style="margin: 1rem 0 0 2rem;">
+      <p>BEP 780/1000</p>
+      <progress id="file" max="100" :value="bp_progress" style="height: 2rem; width: 50rem;"></progress>
+    </div>
+
+  </div>
   <h1 class="title">Main Tasks {{done_tasks}}/{{total_tasks}}</h1>
   <div class="container block">
     <a style="margin-bottom: 1.5rem;" class="button is-success" href="[[=URL('add')]]">
@@ -52,11 +60,15 @@
             </label>
           </div>
         </div>
-        <div @click="set_task(r._idx, r.task_done)" style="margin-left: auto;">
-          <i class="fa fa-3x" style="color:green"
-          :class="{'fa-check-square': r.task_done == 1,
-              'fa-square': r.task_done != 1,}">
-          </i>
+        <div style="margin-left: auto; display: flex;">
+          <!-- If score, etc.-->
+          <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 0.5rem;"/>
+          <div @click="set_task(r._idx, r.task_done)" >
+            <i class="fa fa-3x" style="color:green"
+            :class="{'fa-check-square': r.task_done == 1,
+                'fa-square': r.task_done != 1,}">
+            </i>
+          </div>
         </div>
       </div>
     </div>
