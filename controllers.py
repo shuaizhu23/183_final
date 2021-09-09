@@ -36,10 +36,10 @@ from py4web.utils.form import Form, FormStyleBulma
 
 url_signer = URLSigner(session)
 
-@action('add')
-@action.uses(db, auth, 'add.html')
-def index():
-    return dict(file_upload_url = URL('file_upload', signer=url_signer))
+# @action('add')
+# @action.uses(db, auth, 'add.html')
+# def index():
+#     return dict(file_upload_url = URL('file_upload', signer=url_signer))
 
 # use py4web to help create form for me
 @action('add', method=["GET", "POST"])
@@ -47,17 +47,14 @@ def index():
 def add():
     # Insert form: no record= in it.
     form = Form(db.task, csrf_session=session, formstyle=FormStyleBulma)
-    form.structure.find('[name=task_img]')[0]['_class'] = 'type-integer input blue1';
+    # custom styling for certain form elements
+    # form.structure.find('[name=task_img]')[0]['_class'] = 'type-integer input blue1';
     if form.accepted:
         # We simply redirect; the insertion already happened.
         redirect(URL('index'))
 
     # Either this is a GET request, or this is a POST but not accepted = with errors.
-    return dict(
-        form=form,
-        load_tasks_url = URL('load_tasks', signer=url_signer),
-        file_upload_url = URL('file_upload', signer=url_signer)
-    )
+    return dict(form=form)
     # don't create page as result of form submission
 
 @action('file_upload', method="PUT")

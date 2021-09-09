@@ -67,37 +67,34 @@ let init = (app) => {
         }
     };
 
-    app.upload_complete = function (file_name, file_type, full_url) {
+    app.upload_complete = function (file_name, file_type) {
       app.vue.uploading = false;
       app.vue.uploaded = true;
-      console.log(full_url);
-      document.getElementById("task_task_img").value = full_url;
     };
 
-    app.upload_file = function (event) {
-        // We need the event to find the file.
-        // ??
-        let self = this;
-        // Reads the file.
-        let input = event.target;
-        // select single file and upload single file
-        let file = input.files[0];
-        if (file) {
-            self.uploading = true;
-            let file_type = file.type;
-            let file_name = file.name;
-            let full_url = file_upload_url + "&file_name=" + encodeURIComponent(file_name)
-                + "&file_type=" + encodeURIComponent(file_type);
-            // Uploads the file, using the low-level streaming interface.
-            // avoid any encoding.
-            app.vue.uploading = true;
-            let req = new XMLHttpRequest();
-            req.addEventListener("load", function () {
-                app.upload_complete(file_name, file_type, full_url)
-            });
-            req.open("PUT", full_url, true);
-            req.send(file);
-        }
+    app.upload_file = function (event, row_idx) {
+      // We need the event to find the file.
+      // Reads the file.
+      let input = event.target;
+      // select single file and upload single file
+      let file = input.files[0];
+      let row = app.vue.rows[row_idx];
+      if (file) {
+          self.uploading = true;
+          let file_type = file.type;
+          let file_name = file.name;
+          let full_url = file_upload_url + "&file_name=" + encodeURIComponent(file_name)
+              + "&file_type=" + encodeURIComponent(file_type);
+          // Uploads the file, using the low-level streaming interface.
+          // avoid any encoding.
+          app.vue.uploading = true;
+          let req = new XMLHttpRequest();
+          req.addEventListener("load", function () {
+              app.upload_complete(file_name, file_type, full_url)
+          });
+          req.open("PUT", full_url, true);
+          req.send(file);
+      }
     };
 
     app.methods = {
