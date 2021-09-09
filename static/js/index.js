@@ -46,60 +46,29 @@ let init = (app) => {
       axios.post(set_task_url, {id: task.id, task_done: !t_bool});
     };
 
-    app.upload_complete = function (file_name, file_type) {
-        app.vue.uploading = false;
-        app.vue.upload_done = true;
-        app.vue.uploaded_file = file_name;
-    };
-
-    app.select_file = function (event) {
-        // Reads the file.
-        let input = event.target;
-        app.file = input.files[0];
-        if (app.file) {
-            app.vue.selection_done = true;
-            // We read the file from local disk
-            let reader = new FileReader();
-            reader.addEventListener("load", function () {
-                app.vue.img_url = reader.result;
-            });
-            reader.readAsDataURL(app.file);
-        }
-    };
-
-    app.upload_complete = function (file_name, file_type) {
-      app.vue.uploading = false;
-      app.vue.uploaded = true;
-    };
-
     app.upload_file = function (event, row_idx) {
-      // We need the event to find the file.
-      // Reads the file.
       let input = event.target;
-      // select single file and upload single file
       let file = input.files[0];
       let row = app.vue.rows[row_idx];
       if (file) {
-          self.uploading = true;
-          let file_type = file.type;
-          let file_name = file.name;
-          let full_url = file_upload_url + "&file_name=" + encodeURIComponent(file_name)
-              + "&file_type=" + encodeURIComponent(file_type);
-          // Uploads the file, using the low-level streaming interface.
-          // avoid any encoding.
-          app.vue.uploading = true;
-          let req = new XMLHttpRequest();
-          req.addEventListener("load", function () {
-              app.upload_complete(file_name, file_type, full_url)
+          let reader = new FileReader();
+          reader.addEventListener("load", function () {
+              // Sends the image to the server.
+              axios.post(upload_thumbnail_url, {
+                    task_id: row.id,
+                    thumbnail: reader.result,
+                }).then(function () {
+                    // Sets the local preview.
+                    // local preview not updating
+                    row.task_img = reader.result;
+                });
           });
-          req.open("PUT", full_url, true);
-          req.send(file);
+          reader.readAsDataURL(file);
       }
     };
 
     app.methods = {
       set_task: app.set_task,
-      select_file: app.select_file,
       upload_file: app.upload_file,
     };
 

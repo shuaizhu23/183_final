@@ -35,25 +35,23 @@
 
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
       <p>{{r.task_title}}</p>
-       <div v-if="r.task_img == 'img/default_task.png'">
-         <p>Test</p>
-        <!-- <div class="control">
-          <div class="file is-info">
-            <label class="file-label">
-              <input class="file-input" type="file"
-                     accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
-                     @change="upload_file($event, r._idx)">
-              <span class="file-cta">
-                <span class="file-label">
-                  <span><i class="fa fa-upload"></i></span>
-                </span>
-              </span>
-            </label>
-          </div>
-        </div>-->
-      </div>
+      <!-- v-if="r.task_img == 'img/default_task.png'" -->
       <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->
       <img v-bind:src="r.task_img" style="width: 200px">
+      <div class="control">
+        <div class="file is-info">
+          <label class="file-label">
+            <input class="file-input" type="file"
+               accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+               @change="upload_file($event, r._idx)">
+            <span class="file-cta">
+              <span class="file-label">
+                <span><i class="fa fa-upload"></i></span>
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
       <!-- v-if="!r.task_done" -->
       <div @click="set_task(r._idx, r.task_done)">
         <i class="fa" style="color:green"
@@ -72,7 +70,7 @@
   let load_tasks_url = "[[=XML(load_tasks_url)]]";
   let set_task_url = "[[=XML(set_task_url)]]";
 
-  let file_upload_url = "[[=XML(file_upload_url)]]";
+  let upload_thumbnail_url = "[[=XML(upload_thumbnail_url)]]";
 
   let user_email = "[[=XML(user_email)]]"
   let display_full_name = "[[=XML(display_full_name)]]";

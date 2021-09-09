@@ -36,11 +36,6 @@ from py4web.utils.form import Form, FormStyleBulma
 
 url_signer = URLSigner(session)
 
-# @action('add')
-# @action.uses(db, auth, 'add.html')
-# def index():
-#     return dict(file_upload_url = URL('file_upload', signer=url_signer))
-
 # use py4web to help create form for me
 @action('add', method=["GET", "POST"])
 @action.uses(db, session, auth.user, 'add.html')
@@ -56,19 +51,6 @@ def add():
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(form=form)
     # don't create page as result of form submission
-
-@action('file_upload', method="PUT")
-@action.uses() # Add here things you might want to use.
-def file_upload():
-    file_name = request.params.get("file_name")
-    file_type = request.params.get("file_type")
-    uploaded_file = request.body # This is a file, you can read it.
-    # Diagnostics
-    print("Uploaded", file_name, "of type", file_type)
-    # print("Content:", uploaded_file.read())
-    return "ok"
-
-
 @action('index')
 @action.uses(db, auth.user, 'index.html')
 def index():
@@ -80,8 +62,17 @@ def index():
         user_email = get_user_email(),
         load_tasks_url = URL('load_tasks', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
-        file_upload_url = URL('file_upload', signer=url_signer)
+        upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
     )
+
+@action('upload_thumbnail', method="POST")
+@action.uses(url_signer.verify(), db)
+def upload_thumbnail():
+    task_id = request.json.get("task_id")
+    print(task_id);
+    thumbnail = request.json.get("thumbnail")
+    db(db.task.id == task_id).update(task_img=thumbnail)
+    return "ok"
 
 # This is our very first API function.
 @action('load_contacts')
