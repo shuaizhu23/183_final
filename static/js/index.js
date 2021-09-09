@@ -7,13 +7,8 @@ let app = {};
 // creates a Vue instance, and then initializes the Vue instance.
 let init = (app) => {
     app.data = {
-      selection_done: false,
-      uploading: false,
-      upload_done: false,
-      uploaded: false,
-      img_url: "",
-
-      add_post_content: "",
+      done_tasks: 0,
+      total_tasks: 0,
       rows: [],
     };
 
@@ -39,9 +34,14 @@ let init = (app) => {
         return a;
     }
 
+    // set task done
     app.set_task = function(r_idx, t_bool) {
-      // console.log(!t_bool);
       let task = app.vue.rows[r_idx];
+      if (t_bool) {
+        app.vue.done_tasks--;
+      } else {
+        app.vue.done_tasks++;
+      }
       Vue.set(task, 'task_done', !t_bool);
       axios.post(set_task_url, {id: task.id, task_done: !t_bool});
     };
@@ -81,8 +81,12 @@ let init = (app) => {
 
     app.init = () => {
         axios.get(load_tasks_url).then(function (response) {
-            // console.log(response)
-            app.vue.rows = app.enumerate(response.data.rows);
+            tasks = app.enumerate(response.data.rows);
+            tasks.forEach(element => {
+              if (element.task_done) {app.vue.done_tasks++;}
+            })
+            app.vue.rows = tasks;
+            app.vue.total_tasks = tasks.length;
         });
     };
 

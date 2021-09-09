@@ -25,16 +25,15 @@
 
 
 <div class="section" id="vue-target" v-cloak>
-  <h1 class="title">Main Tasks 4/4</h1>
-
+  <h1 class="title">Main Tasks {{done_tasks}}/{{total_tasks}}</h1>
   <div class="container block">
-    <a class="button is-success" href="[[=URL('add')]]">
+    <a style="margin-bottom: 1.5rem;" class="button is-success" href="[[=URL('add')]]">
       <span class="icon"><i class="fa fa-plus"></i></span>
       <span>Add</span>
     </a>
 
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
-      <p>{{r.task_title}}</p>
+      <p style="font-size: 20px">{{r.task_title}}</p>
       <!-- v-if="r.task_img == 'img/default_task.png'" -->
       <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->
       <div style="display:flex">
