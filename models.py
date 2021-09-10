@@ -33,7 +33,7 @@ db.define_table(
 db.define_table(
     'rating',
     Field('task_id', 'reference task'),
-    Field('rating', 'integer', default=2),
+    Field('task_difficulty', 'integer', default=2),
     Field('rater'),
 )
 

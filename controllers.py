@@ -110,9 +110,7 @@ def delete_contact():
 def set_task():
     id = request.json.get('id')
     task_done = request.json.get('task_done')
-    # assert image_id is not None and rating is not None
 
-    # & (db.created_by == get_user())
     db.task.update_or_insert(
         ((db.task.id == id)),
         id=id,
@@ -124,16 +122,17 @@ def set_task():
 @action.uses(url_signer.verify(), db)
 def get_difficulty():
     id = request.params.get('id')
+    vid = request.params.get('vid')
 
+    # couldn't modify py4web form so modify on first check
     row = db(db.rating.id == id).select().first()
-    print(row)
-    if (!row.task_difficulty):
+    if (row is None):
         base = db(db.task.id == id).select().first()
         db.rating.update_or_insert(
             ((db.rating.id == id)),
-            id=id,
+            task_id=id,
             task_difficulty=base.task_difficulty,
-            rater=auth.user.id
+            rater=vid
         )
         task_difficulty = base.task_difficulty
     else:
@@ -151,6 +150,6 @@ def set_difficulty():
         ((db.task.id == id)),
         id=id,
         task_difficulty=task_difficulty,
-        rater=auth.user.id
+        rater=db(db.auth_user.email == get_user_email()).select().first().id
     )
     return "ok"
