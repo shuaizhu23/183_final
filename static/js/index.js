@@ -89,15 +89,16 @@ let init = (app) => {
       axios.post(set_difficulty_url, {id: task.id, task_difficulty: num_stars});
     };
 
-    app.stars_out = (r_idx) => {
-      let task = app.vue.rows[r_idx];
-      task.stars_display = task.rating;
-    };
+    // Just handles show and hide stars
+      app.stars_out = (r_idx) => {
+        let task = app.vue.rows[r_idx];
+        task.stars_display = task.rating;
+      };
 
-    app.stars_over = (r_idx, num_stars) => {
-      let task = app.vue.rows[r_idx];
-      task.stars_display = num_stars;
-    };
+      app.stars_over = (r_idx, num_stars) => {
+        let task = app.vue.rows[r_idx];
+        task.stars_display = num_stars;
+      };
 
     app.delete_task = (row_idx) => {
       let id = app.vue.rows[row_idx].id;
@@ -146,7 +147,6 @@ let init = (app) => {
                 .then((result) => {
                     task.rating = result.data.task_difficulty;
                     task.stars_display = result.data.task_difficulty;
-                    task.rating = result;
                 });
             }
         });

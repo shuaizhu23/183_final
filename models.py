@@ -30,6 +30,13 @@ db.define_table(
   Field('task_xp', 'integer', default=150),
 )
 
+db.define_table(
+    'rating',
+    Field('task_id', 'reference task'),
+    Field('rating', 'integer', default=2),
+    Field('rater'),
+)
+
 db.task.task_img.readable = db.task.task_img.writable = False
 db.task.created_by.readable = db.task.created_by.writable = False
 db.task.task_xp.readable = db.task.task_xp.writable = False

@@ -42,8 +42,11 @@ url_signer = URLSigner(session)
 def add():
     # Insert form: no record= in it.
     form = Form(db.task, csrf_session=session, formstyle=FormStyleBulma)
+    # !!get id of insert?
+
     # custom styling for certain form elements
     # form.structure.find('[name=task_img]')[0]['_class'] = 'type-integer input blue1';
+
     if form.accepted:
         # We simply redirect; the insertion already happened.
         redirect(URL('index'))
@@ -83,7 +86,6 @@ def index(id=id):
 @action.uses(url_signer.verify(), db)
 def upload_thumbnail():
     task_id = request.json.get("task_id")
-    print(task_id);
     thumbnail = request.json.get("thumbnail")
     db(db.task.id == task_id).update(task_img=thumbnail)
     return "ok"
@@ -119,25 +121,36 @@ def set_task():
     return "ok" # Just to have some confirmation in the Network tab.
 
 @action('get_difficulty')
-@action.uses(url_signer.verify(), db, auth.user)
+@action.uses(url_signer.verify(), db)
 def get_difficulty():
     id = request.params.get('id')
-    row = db(db.task.id == id).select().first()
-        # & (db.stars.rater == get_user())).select().first()
-    task_difficulty = row.task_difficulty
+
+    row = db(db.rating.id == id).select().first()
+    print(row)
+    if (!row.task_difficulty):
+        base = db(db.task.id == id).select().first()
+        db.rating.update_or_insert(
+            ((db.rating.id == id)),
+            id=id,
+            task_difficulty=base.task_difficulty,
+            rater=auth.user.id
+        )
+        task_difficulty = base.task_difficulty
+    else:
+        task_difficulty = row.task_difficulty
+
     # if row is not None else 0
     return dict(task_difficulty=task_difficulty)
 
 @action('set_difficulty', method='POST')
-@action.uses(url_signer.verify(), db)
+@action.uses(url_signer.verify(), db, auth.user)
 def set_difficulty():
     id = request.json.get('id')
     task_difficulty = request.json.get('task_difficulty')
-
-    db.task.update_or_insert(
+    db.rating.update_or_insert(
         ((db.task.id == id)),
         id=id,
         task_difficulty=task_difficulty,
-        task_xp=task_difficulty*50
+        rater=auth.user.id
     )
     return "ok"
