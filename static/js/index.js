@@ -75,8 +75,6 @@ let init = (app) => {
                     task_id: row.id,
                     thumbnail: reader.result,
                 }).then(function () {
-                    // Sets the local preview.
-                    // local preview not updating
                     row.task_img = reader.result;
                 });
           });
@@ -132,7 +130,8 @@ let init = (app) => {
     });
 
     app.init = () => {
-        axios.get(load_tasks_url).then(function (response) {
+      console.log(view_task_id);
+        axios.get(load_tasks_url, {params: {"id":view_task_id}}).then(function (response) {
             let tasks = app.complete(app.enumerate(response.data.rows));
             tasks.forEach(element => {
               if (element.task_done) {app.vue.done_tasks++;}

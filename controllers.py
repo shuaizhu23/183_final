@@ -51,15 +51,26 @@ def add():
     # Either this is a GET request, or this is a POST but not accepted = with errors.
     return dict(form=form)
     # don't create page as result of form submission
+
 @action('index')
 @action.uses(db, auth.user, 'index.html')
 def index():
-    r = db(db.auth_user.email == get_user_email()).select().first()
-    name = r.first_name + " " + r.last_name if r is not None else "Unknown"
+    return dict(
+        view_task_id = db(db.auth_user.email == get_user_email()).select().first().id,
+        load_tasks_url = URL('load_tasks', signer=url_signer),
+        delete_task_url = URL('delete_task', signer=url_signer),
+        set_task_url = URL('set_task', signer=url_signer),
+        set_difficulty_url = URL('set_difficulty', signer=url_signer),
+        get_difficulty_url = URL('get_difficulty', signer=url_signer),
+        upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
+    )
+
+@action('index/<id:int>')
+@action.uses(db, auth.user, 'index.html')
+def index(id=id):
     return dict(
         # This is the signed URL for the callback.
-        display_full_name = name,
-        user_email = get_user_email(),
+        view_task_id = id,
         load_tasks_url = URL('load_tasks', signer=url_signer),
         delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
@@ -77,18 +88,10 @@ def upload_thumbnail():
     db(db.task.id == task_id).update(task_img=thumbnail)
     return "ok"
 
-# This is our very first API function.
-@action('load_contacts')
-@action.uses(url_signer.verify(), db)
-def load_contacts():
-    rows = db(db.contact).select().as_list()
-    # print(rows)
-    return dict(rows=rows)
-
 @action('load_tasks')
 @action.uses(url_signer.verify(), db)
 def load_tasks():
-    rows = db(db.task).select().as_list()
+    rows = db(db.task.created_by == request.params.get("id")).select().as_list()
     return dict(rows=rows)
 
 @action('delete_task')

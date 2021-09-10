@@ -7,8 +7,9 @@ from pydal.validators import *
 def get_user_email():
     return auth.current_user.get('email') if auth.current_user else None
 
-def get_time():
-    return datetime.datetime.utcnow()
+def get_uid():
+    return auth.current_user.get('id') if auth.current_user else None
+
 
 # also called impact and urgency
 # Field('task_priority', 'integer', default=2),
@@ -23,7 +24,7 @@ db.define_table(
   Field('task_done', 'boolean', default=False),
   Field('task_img', 'text', default='img/default_task.png'),
   # hidden from user
-  Field('created_by', default=get_user_email),
+  Field('created_by', default=get_uid),
 
   Field('task_difficulty', 'integer', default=2),
   Field('task_xp', 'integer', default=150),
