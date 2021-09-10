@@ -110,6 +110,10 @@ let init = (app) => {
                   break;
               }
           }
+          app.vue.rows.forEach(element => {
+            if (element.task_done) {app.vue.done_tasks--;}
+          })
+          app.vue.total_tasks = app.vue.rows.length;
       });
     };
 
