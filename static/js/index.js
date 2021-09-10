@@ -101,8 +101,22 @@ let init = (app) => {
       task.stars_display = num_stars;
     };
 
+    app.delete_task = (row_idx) => {
+      let id = app.vue.rows[row_idx].id;
+      axios.get(delete_task_url, {params: {id: id}}).then(function (response) {
+          for (let i = 0; i < app.vue.rows.length; i++) {
+              if (app.vue.rows[i].id === id) {
+                  app.vue.rows.splice(i, 1);
+                  app.enumerate(app.vue.rows);
+                  break;
+              }
+          }
+      });
+    };
+
     app.methods = {
       set_task: app.set_task,
+      delete_task: app.delete_task,
       set_difficulty: app.set_difficulty,
       upload_file: app.upload_file,
 

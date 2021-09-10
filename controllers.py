@@ -61,6 +61,7 @@ def index():
         display_full_name = name,
         user_email = get_user_email(),
         load_tasks_url = URL('load_tasks', signer=url_signer),
+        delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
         set_difficulty_url = URL('set_difficulty', signer=url_signer),
         get_difficulty_url = URL('get_difficulty', signer=url_signer),
@@ -89,6 +90,14 @@ def load_contacts():
 def load_tasks():
     rows = db(db.task).select().as_list()
     return dict(rows=rows)
+
+@action('delete_task')
+@action.uses(url_signer.verify(), db)
+def delete_contact():
+    id = request.params.get('id')
+    # assert id is not None
+    db(db.task.id == id).delete()
+    return "ok"
 
 @action('set_task', method='POST')
 # remove auth.user

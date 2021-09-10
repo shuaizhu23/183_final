@@ -40,7 +40,7 @@
       <span>Add Tasks</span>
     </a>
 
-    <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
+    <div v-for="r in rows" class="box" style="background-color: #F5F5F5; position: relative;">
       <p style="font-size: 20px">{{r.task_title}}</p>
       <!-- v-if="r.task_img == 'img/default_task.png'" -->
       <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->
@@ -60,8 +60,9 @@
             </label>
           </div>
         </div>
-        <div>
-          <!-- This is the code for the star rating -->
+        <!-- Difficulty Rating-->
+        <div style="margin-right: 0.5rem;">
+          <p>Difficulty</p>
           <span @mouseout="stars_out(r._idx)">
             <span @mouseover="stars_over(r._idx, star_idx)"
                   @click="set_difficulty(r._idx, star_idx)"
@@ -70,10 +71,16 @@
               <i v-if="star_idx > r.stars_display" class="fa fa-star-o"></i>
             </span>
           </span>
+          <div><p>Rated by Shuai</p></div>
         </div>
         <div style="margin-left: auto; display: flex;">
           <!-- If score, etc.-->
           <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 0.5rem;"/>
+          <div>
+            <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:0.5rem;">
+                <i class="fa fa-trash"></i>
+            </button>
+          </div>
           <div @click="set_task(r._idx, r.task_done)" >
             <i class="fa fa-3x" style="color:green"
             :class="{'fa-check-square': r.task_done == 1,
@@ -92,6 +99,8 @@
 <script>
   let load_tasks_url = "[[=XML(load_tasks_url)]]";
   let set_task_url = "[[=XML(set_task_url)]]";
+  let delete_task_url = "[[=XML(delete_task_url)]]";
+
   let set_difficulty_url = "[[=XML(set_difficulty_url)]]";
   let get_difficulty_url = "[[=XML(get_difficulty_url)]]";
 
