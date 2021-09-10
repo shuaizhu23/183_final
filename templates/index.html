@@ -25,10 +25,10 @@
 
 
 <div class="section" id="vue-target" v-cloak>
-  <div style="display:flex">
+  <div style="display:flex; background-color: #EEE6DD;">
     <h1 class="title">BP Level 9</h1>
     <div style="margin: 1rem 0 0 2rem;">
-      <p>BEP 780/1000</p>
+      <p>BEP {{bp_xp}}/1000</p>
       <progress id="file" max="100" :value="bp_progress" style="height: 2rem; width: 50rem;"></progress>
     </div>
 
@@ -37,7 +37,7 @@
   <div class="container block">
     <a style="margin-bottom: 1.5rem;" class="button is-success" href="[[=URL('add')]]">
       <span class="icon"><i class="fa fa-plus"></i></span>
-      <span>Add</span>
+      <span>Add Tasks</span>
     </a>
 
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5;">
@@ -46,7 +46,7 @@
       <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->
       <div style="display:flex">
         <img v-bind:src="r.task_img" style="width: 200px">
-        <div class="control" style="margin: 1rem 0 0 1rem;">
+        <div class="control" style="margin: 1rem 2rem 0 1rem;">
           <div class="file is-info">
             <label class="file-label">
               <input class="file-input" type="file"
@@ -59,6 +59,17 @@
               </span>
             </label>
           </div>
+        </div>
+        <div>
+          <!-- This is the code for the star rating -->
+          <span @mouseout="stars_out(r._idx)">
+            <span @mouseover="stars_over(r._idx, star_idx)"
+                  @click="set_difficulty(r._idx, star_idx)"
+                  v-for="star_idx in [1, 2, 3, 4, 5]">
+              <i v-if="star_idx <= r.stars_display" class="fa fa-star"></i>
+              <i v-if="star_idx > r.stars_display" class="fa fa-star-o"></i>
+            </span>
+          </span>
         </div>
         <div style="margin-left: auto; display: flex;">
           <!-- If score, etc.-->
@@ -81,6 +92,8 @@
 <script>
   let load_tasks_url = "[[=XML(load_tasks_url)]]";
   let set_task_url = "[[=XML(set_task_url)]]";
+  let set_difficulty_url = "[[=XML(set_difficulty_url)]]";
+  let get_difficulty_url = "[[=XML(get_difficulty_url)]]";
 
   let upload_thumbnail_url = "[[=XML(upload_thumbnail_url)]]";
 

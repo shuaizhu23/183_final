@@ -62,6 +62,8 @@ def index():
         user_email = get_user_email(),
         load_tasks_url = URL('load_tasks', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
+        set_difficulty_url = URL('set_difficulty', signer=url_signer),
+        get_difficulty_url = URL('get_difficulty', signer=url_signer),
         upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
     )
 
@@ -103,3 +105,27 @@ def set_task():
         task_done=task_done
     )
     return "ok" # Just to have some confirmation in the Network tab.
+
+@action('get_difficulty')
+@action.uses(url_signer.verify(), db, auth.user)
+def get_difficulty():
+    id = request.params.get('id')
+    row = db(db.task.id == id).select().first()
+        # & (db.stars.rater == get_user())).select().first()
+    task_difficulty = row.task_difficulty
+    # if row is not None else 0
+    return dict(task_difficulty=task_difficulty)
+
+@action('set_difficulty', method='POST')
+@action.uses(url_signer.verify(), db)
+def set_difficulty():
+    id = request.json.get('id')
+    task_difficulty = request.json.get('task_difficulty')
+
+    db.task.update_or_insert(
+        ((db.task.id == id)),
+        id=id,
+        task_difficulty=task_difficulty,
+        task_xp=task_difficulty*50
+    )
+    return "ok"

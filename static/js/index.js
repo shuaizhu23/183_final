@@ -11,7 +11,8 @@ let init = (app) => {
       total_tasks: 0,
       rows: [],
 
-      bp_progress: 30,
+      bp_xp: 500,
+      bp_progress: 50,
     };
 
     // file selected for upload.
@@ -20,6 +21,14 @@ let init = (app) => {
     app.enumerate = (a) => {
         let k = 0;
         a.map((e) => {e._idx = k++;});
+        return a;
+    };
+
+    app.complete = (a) => {
+        a.map((e) => {
+          e.rating = 0;
+          e.stars_display = 0;
+        });
         return a;
     };
 
@@ -40,8 +49,14 @@ let init = (app) => {
     app.set_task = function(r_idx, t_bool) {
       let task = app.vue.rows[r_idx];
       if (t_bool) {
+        app.vue.bp_xp = (app.vue.bp_progress * 10) - task.task_xp;
+        app.vue.bp_progress = ((app.vue.bp_progress * 10) - task.task_xp) / 10;
+
         app.vue.done_tasks--;
       } else {
+        app.vue.bp_xp = (app.vue.bp_progress * 10) + task.task_xp;
+        app.vue.bp_progress = ((app.vue.bp_progress * 10) + task.task_xp) / 10;
+
         app.vue.done_tasks++;
       }
       Vue.set(task, 'task_done', !t_bool);
@@ -69,9 +84,30 @@ let init = (app) => {
       }
     };
 
+    app.set_difficulty = (r_idx, num_stars) => {
+      let task = app.vue.rows[r_idx];
+      task.rating = num_stars;
+      // Sets the stars on the server.
+      axios.post(set_difficulty_url, {id: task.id, task_difficulty: num_stars});
+    };
+
+    app.stars_out = (r_idx) => {
+      let task = app.vue.rows[r_idx];
+      task.stars_display = task.rating;
+    };
+
+    app.stars_over = (r_idx, num_stars) => {
+      let task = app.vue.rows[r_idx];
+      task.stars_display = num_stars;
+    };
+
     app.methods = {
       set_task: app.set_task,
+      set_difficulty: app.set_difficulty,
       upload_file: app.upload_file,
+
+      stars_out: app.stars_out,
+      stars_over: app.stars_over,
     };
 
     // create the Vue instance.
@@ -83,12 +119,23 @@ let init = (app) => {
 
     app.init = () => {
         axios.get(load_tasks_url).then(function (response) {
-            tasks = app.enumerate(response.data.rows);
+            let tasks = app.complete(app.enumerate(response.data.rows));
             tasks.forEach(element => {
               if (element.task_done) {app.vue.done_tasks++;}
             })
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
+        })
+        // performs function without modifiying or returning anything
+        .then(() => {
+            for (let task of app.vue.rows) {
+              axios.get(get_difficulty_url, {params: {"id": task.id}})
+                .then((result) => {
+                    task.rating = result.data.task_difficulty;
+                    task.stars_display = result.data.task_difficulty;
+                    task.rating = result;
+                });
+            }
         });
     };
 

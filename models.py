@@ -10,28 +10,23 @@ def get_user_email():
 def get_time():
     return datetime.datetime.utcnow()
 
-db.define_table(
-    'contact',
-    Field('post_content'),
-    Field('full_name'),
-    Field('liked','boolean'),
-    Field('user_email', default=get_user_email)
-)
-
 # also called impact and urgency
 # Field('task_priority', 'integer', default=2),
 # Field('time_priority', 'integer', default=2),
 # task_xp is derived from task difficult and other stuff, 2nd prio
 
+# modify model for user account
+
 db.define_table(
   'task',
   Field('task_title'),
-  Field('task_difficulty', 'integer', default=2),
   Field('task_done', 'boolean', default=False),
   Field('task_img', 'text', default='img/default_task.png'),
   # hidden from user
   Field('created_by', default=get_user_email),
-  Field('task_xp', 'integer', default=50),
+
+  Field('task_difficulty', 'integer', default=2),
+  Field('task_xp', 'integer', default=150),
 )
 
 db.task.task_img.readable = db.task.task_img.writable = False
