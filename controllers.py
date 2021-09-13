@@ -148,7 +148,7 @@ def get_diff_raters():
             raters += r['rater'] + ", "
             raters = raters[:-2]
 
-    print(raters)
+    # print(raters)
     # if row is not None else 0
     return dict(task_difficulty=task_difficulty, raters=raters)
 
@@ -157,13 +157,15 @@ def get_diff_raters():
 def set_difficulty():
     id = request.json.get('id')
     task_difficulty = request.json.get('task_difficulty')
-    name = db(db.auth_user.email == get_user_email()).select().first().first_name
+    person = db(db.auth_user.email == get_user_email()).select().first()
+    full_name = person.first_name + " " + person.last_name
     # print(db(db.auth_user.email == get_user_email()).select().first().first_name)
-    db(db.rating.rater == 1).delete()
+    # db(db.rating.rater == 1).delete()
+
     db.rating.update_or_insert(
-        ((db.task.id == id)),
-        id=id,
+        ((db.rating.task_id == id) & (db.rating.rater == full_name)),
+        task_id=id,
         task_difficulty=task_difficulty,
-        rater=name
+        rater=full_name
     )
     return "ok"
