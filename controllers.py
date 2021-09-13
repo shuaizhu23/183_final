@@ -144,10 +144,8 @@ def get_diff_raters():
     else:
         task_difficulty = row.task_difficulty
         rater_list = db(db.rating.task_id == id).select().as_list()
-        print(rater_list)
         for r in rater_list:
             raters += r['rater'] + ", "
-            print(raters)
             raters = raters[:-2]
 
     print(raters)

@@ -151,6 +151,7 @@ let init = (app) => {
                 .then((result) => {
                     task.rating = result.data.task_difficulty;
                     task.stars_display = result.data.task_difficulty;
+                    task.raters = result.data.raters
                 });
             }
         });
