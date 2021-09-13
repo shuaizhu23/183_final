@@ -64,7 +64,7 @@ def index():
         delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
         set_difficulty_url = URL('set_difficulty', signer=url_signer),
-        get_difficulty_url = URL('get_difficulty', signer=url_signer),
+        get_diff_raters_url = URL('get_diff_raters', signer=url_signer),
         upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
     )
 
@@ -78,7 +78,7 @@ def index(id=id):
         delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
         set_difficulty_url = URL('set_difficulty', signer=url_signer),
-        get_difficulty_url = URL('get_difficulty', signer=url_signer),
+        get_diff_raters_url = URL('get_diff_raters', signer=url_signer),
         upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
     )
 
@@ -118,38 +118,54 @@ def set_task():
     )
     return "ok" # Just to have some confirmation in the Network tab.
 
-@action('get_difficulty')
+@action('get_diff_raters')
 @action.uses(url_signer.verify(), db)
-def get_difficulty():
+def get_diff_raters():
     id = request.params.get('id')
     vid = request.params.get('vid')
+    raters = ""
 
     # couldn't modify py4web form so modify on first check
-    row = db(db.rating.id == id).select().first()
+    row = db(db.rating.task_id == id).select().first()
     if (row is None):
         base = db(db.task.id == id).select().first()
+        person = db(db.auth_user.email == get_user_email()).select().first()
+        full_name = person.first_name + " " + person.last_name
+        # print(full_name)
         db.rating.update_or_insert(
             ((db.rating.id == id)),
             task_id=id,
             task_difficulty=base.task_difficulty,
-            rater=vid
+            rater=full_name
         )
+        # generate string here
+        raters += full_name
         task_difficulty = base.task_difficulty
     else:
         task_difficulty = row.task_difficulty
+        rater_list = db(db.rating.task_id == id).select().as_list()
+        print(rater_list)
+        for r in rater_list:
+            raters += r['rater'] + ", "
+            print(raters)
+            raters = raters[:-2]
 
+    print(raters)
     # if row is not None else 0
-    return dict(task_difficulty=task_difficulty)
+    return dict(task_difficulty=task_difficulty, raters=raters)
 
 @action('set_difficulty', method='POST')
 @action.uses(url_signer.verify(), db, auth.user)
 def set_difficulty():
     id = request.json.get('id')
     task_difficulty = request.json.get('task_difficulty')
+    name = db(db.auth_user.email == get_user_email()).select().first().first_name
+    # print(db(db.auth_user.email == get_user_email()).select().first().first_name)
+    db(db.rating.rater == 1).delete()
     db.rating.update_or_insert(
         ((db.task.id == id)),
         id=id,
         task_difficulty=task_difficulty,
-        rater=db(db.auth_user.email == get_user_email()).select().first().id
+        rater=name
     )
     return "ok"

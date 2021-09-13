@@ -147,7 +147,7 @@ let init = (app) => {
         // performs function without modifiying or returning anything
         .then(() => {
             for (let task of app.vue.rows) {
-              axios.get(get_difficulty_url, {params: {"id": task.id, "vid":view_task_id}})
+              axios.get(get_diff_raters_url, {params: {"id": task.id, "vid":view_task_id}})
                 .then((result) => {
                     task.rating = result.data.task_difficulty;
                     task.stars_display = result.data.task_difficulty;

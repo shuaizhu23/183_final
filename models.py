@@ -34,6 +34,7 @@ db.define_table(
     'rating',
     Field('task_id', 'reference task'),
     Field('task_difficulty', 'integer', default=2),
+    # should store rater name I think
     Field('rater'),
 )
 
