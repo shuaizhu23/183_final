@@ -135,7 +135,7 @@ let init = (app) => {
     });
 
     app.init = () => {
-      console.log(view_task_id);
+      // console.log(view_task_id);
         axios.get(load_tasks_url, {params: {"id":view_task_id}}).then(function (response) {
             let tasks = app.complete(app.enumerate(response.data.rows));
             tasks.forEach(element => {

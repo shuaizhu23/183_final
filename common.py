@@ -35,13 +35,16 @@ for item in settings.LOGGERS:
 # #######################################################
 # connect to db
 # #######################################################
-db = DAL(
-    settings.DB_URI,
-    folder=settings.DB_FOLDER,
-    pool_size=settings.DB_POOL_SIZE,
-    migrate=settings.DB_MIGRATE,
-    fake_migrate=settings.DB_FAKE_MIGRATE,
-)
+if os.environ.get("GAE_ENV"):
+    pass
+else:
+    db = DAL(
+        settings.DB_URI,
+        folder=settings.DB_FOLDER,
+        pool_size=settings.DB_POOL_SIZE,
+        migrate=settings.DB_MIGRATE,
+        fake_migrate=settings.DB_FAKE_MIGRATE,
+    )
 
 # #######################################################
 # define global objects that may or may not be used by the actions
