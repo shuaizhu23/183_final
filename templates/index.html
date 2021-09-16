@@ -76,7 +76,7 @@
         <div style="margin-left: auto; display: flex;">
           <!-- If score, etc.-->
           <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 0.5rem;"/>
-          <div>
+          <div v-if="r.owned == true">
             <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:0.5rem;">
                 <i class="fa fa-trash"></i>
             </button>
@@ -107,6 +107,7 @@
   let upload_thumbnail_url = "[[=XML(upload_thumbnail_url)]]";
 
   let view_task_id = "[[=XML(view_task_id)]]";
+  let own_page = "[[=XML(own_page)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

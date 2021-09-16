@@ -60,6 +60,7 @@ def add():
 def index():
     return dict(
         view_task_id = db(db.auth_user.email == get_user_email()).select().first().id,
+        own_page = "true",
         load_tasks_url = URL('load_tasks', signer=url_signer),
         delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),
@@ -74,6 +75,7 @@ def index(id=id):
     return dict(
         # This is the signed URL for the callback.
         view_task_id = id,
+        own_page = "false",
         load_tasks_url = URL('load_tasks', signer=url_signer),
         delete_task_url = URL('delete_task', signer=url_signer),
         set_task_url = URL('set_task', signer=url_signer),

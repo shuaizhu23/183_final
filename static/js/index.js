@@ -136,6 +136,7 @@ let init = (app) => {
 
     app.init = () => {
       // console.log(view_task_id);
+      console.log(own_page);
         axios.get(load_tasks_url, {params: {"id":view_task_id}}).then(function (response) {
             let tasks = app.complete(app.enumerate(response.data.rows));
             tasks.forEach(element => {
@@ -152,6 +153,10 @@ let init = (app) => {
                     task.rating = result.data.task_difficulty;
                     task.stars_display = result.data.task_difficulty;
                     task.raters = result.data.raters
+
+                    if (own_page == "true") {
+                      task.owned = true;
+                    }
                 });
             }
         });
