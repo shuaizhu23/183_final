@@ -76,12 +76,20 @@
         <div style="margin-left: auto; display: flex;">
           <!-- If score, etc.-->
           <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 0.5rem;"/>
-          <div v-if="r.owned == true">
-            <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:0.5rem;">
-                <i class="fa fa-trash"></i>
-            </button>
-          </div>
-          <div @click="set_task(r._idx, r.task_done)" >
+          <span v-if="r.owned == true">
+            <div>
+              <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:0.5rem;">
+                  <i class="fa fa-trash"></i>
+              </button>
+            </div>
+            <div @click="set_task(r._idx, r.task_done)" >
+              <i class="fa fa-3x" style="color:green"
+              :class="{'fa-check-square': r.task_done == 1,
+                  'fa-square': r.task_done != 1,}">
+              </i>
+            </div>
+          </span>
+          <div v-else>
             <i class="fa fa-3x" style="color:green"
             :class="{'fa-check-square': r.task_done == 1,
                 'fa-square': r.task_done != 1,}">
