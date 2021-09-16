@@ -67,6 +67,7 @@ def index():
         set_difficulty_url = URL('set_difficulty', signer=url_signer),
         get_diff_raters_url = URL('get_diff_raters', signer=url_signer),
         upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
+        edit_task_title_url = URL('edit_task_title', signer=url_signer),
     )
 
 @action('index/<id:int>')
@@ -82,6 +83,7 @@ def index(id=id):
         set_difficulty_url = URL('set_difficulty', signer=url_signer),
         get_diff_raters_url = URL('get_diff_raters', signer=url_signer),
         upload_thumbnail_url = URL('upload_thumbnail', signer=url_signer),
+        edit_task_title_url = URL('edit_task_title', signer=url_signer),
     )
 
 @action('upload_thumbnail', method="POST")
@@ -170,4 +172,12 @@ def set_difficulty():
         task_difficulty=task_difficulty,
         rater=full_name
     )
+    return "ok"
+
+@action('edit_task_title', method="POST")
+@action.uses(url_signer.verify(), db)
+def edit_task_title():
+    id = request.json.get('id')
+    value = request.json.get('value')
+    db(db.task.id == id).update(task_title = value)
     return "ok"

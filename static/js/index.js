@@ -32,19 +32,6 @@ let init = (app) => {
         return a;
     };
 
-    app.decorate = (a) => {
-        /// js object
-        a.map((e) => {e._state = {post_content: "clean", full_name: "clean"} ;});
-        a.map((e) => {
-          if (user_email != e.user_email) {
-            e.owned = false;
-          } else {
-            e.owned = true;
-          }
-        });
-        return a;
-    }
-
     // set task done
     app.set_task = function(r_idx, t_bool) {
       let task = app.vue.rows[r_idx];
@@ -117,11 +104,38 @@ let init = (app) => {
       });
     };
 
+    app.start_edit = function (row_idx) {
+      app.vue.rows[row_idx]._state = "edit";
+      console.log(app.vue.rows[row_idx]._state);
+    };
+
+    app.stop_edit = function (row_idx, value) {
+      let row = app.vue.rows[row_idx];
+      let rowState = row._state;
+      console.log(rowState, row.task_title, value);
+      if (row.task_title != value) {
+        if (rowState == 'edit') {
+          rowState = "pending";
+          axios.post(edit_task_title_url, {
+              id: row.id, value: value
+          }).then(function (result) {
+              app.vue.rows[row_idx]._state = "clean";
+          })
+        }
+      } else {
+        app.vue.rows[row_idx]._state = "clean";
+      }
+      console.log(app.vue.rows[row_idx]._state);
+    };
+
     app.methods = {
       set_task: app.set_task,
       delete_task: app.delete_task,
       set_difficulty: app.set_difficulty,
       upload_file: app.upload_file,
+
+      start_edit: app.start_edit,
+      stop_edit: app.stop_edit,
 
       stars_out: app.stars_out,
       stars_over: app.stars_over,
@@ -136,10 +150,10 @@ let init = (app) => {
 
     app.init = () => {
       // console.log(view_task_id);
-      console.log(own_page);
         axios.get(load_tasks_url, {params: {"id":view_task_id}}).then(function (response) {
             let tasks = app.complete(app.enumerate(response.data.rows));
             tasks.forEach(element => {
+              element._state = "clean";
               if (element.task_done) {app.vue.done_tasks++;}
             })
             app.vue.rows = tasks;
@@ -152,7 +166,7 @@ let init = (app) => {
                 .then((result) => {
                     task.rating = result.data.task_difficulty;
                     task.stars_display = result.data.task_difficulty;
-                    task.raters = result.data.raters
+                    task.raters = result.data.raters;
 
                     if (own_page == "true") {
                       task.owned = true;
