@@ -38,10 +38,11 @@ db.define_table(
     Field('rater'),
 )
 
+# If i leave uid in here it crashes? , default=get_uid
 db.define_table(
     'adventurer',
-    Field('created_by', default=get_uid),
-    Field('battlepass_xp', 'integer', default=0),
+    Field('userid'),
+    Field('bpxp', 'integer', default=0),
     Field('rolls', 'integer', default=0),
 )
 

@@ -34,19 +34,22 @@ let init = (app) => {
     // set task done
     app.set_task = function(r_idx, t_bool) {
       let task = app.vue.rows[r_idx];
+      let taskxp = task.rating * 50;
+      console.log(taskxp)
+      let bpchange = 0;
       if (t_bool) {
-        app.vue.bp_xp = (app.vue.bp_progress * 10) - task.task_xp;
-        app.vue.bp_progress = ((app.vue.bp_progress * 10) - task.task_xp) / 10;
-
+        bpchange = app.vue.bp_xp - taskxp;
+        app.vue.bp_xp = bpchange;
+        app.vue.bp_progress = ((app.vue.bp_progress * 10) - taskxp) / 10;
         app.vue.done_tasks--;
       } else {
-        app.vue.bp_xp = (app.vue.bp_progress * 10) + task.task_xp;
-        app.vue.bp_progress = ((app.vue.bp_progress * 10) + task.task_xp) / 10;
-
+        bpchange = app.vue.bp_xp + taskxp;
+        app.vue.bp_xp = bpchange;
+        app.vue.bp_progress = ((app.vue.bp_progress * 10) + taskxp) / 10;
         app.vue.done_tasks++;
       }
       Vue.set(task, 'task_done', !t_bool);
-      axios.post(set_task_url, {id: task.id, task_done: !t_bool});
+      axios.post(set_task_url, {id: task.id, task_done: !t_bool, bpchange: bpchange});
     };
 
     app.upload_file = function (event, row_idx) {
@@ -151,7 +154,8 @@ let init = (app) => {
             })
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
-            app.vue.user = response.data.user;
+            app.vue.bp_xp = response.data.bpxp;
+            app.vue.bp_progress = response.data.bpxp/100;
         })
         // performs function without modifiying or returning anything
         .then(() => {
@@ -170,9 +174,7 @@ let init = (app) => {
         });
     };
 
-    // Call to the initializer.
     app.init();
 };
 
-// takes the (empty) app object, and initializes it,
 init(app);

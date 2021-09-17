@@ -1,30 +1,3 @@
-"""
-This file defines actions, i.e. functions the URLs are mapped into
-The @action(path) decorator exposed the function at URL:
-
-    http://127.0.0.1:8000/{app_name}/{path}
-
-If app_name == '_default' then simply
-
-    http://127.0.0.1:8000/{path}
-
-If path == 'index' it can be omitted:
-
-    http://127.0.0.1:8000/
-
-The path follows the bottlepy syntax.
-
-@action.uses('generic.html')  indicates that the action uses the generic.html template
-@action.uses(session)         indicates that the action uses the session
-@action.uses(db)              indicates that the action uses the db
-@action.uses(T)               indicates that the action uses the i18n & pluralization
-@action.uses(auth.user)       indicates that the action requires a logged in user
-@action.uses(auth)            indicates that the action requires the auth object
-
-session, db, T, auth, and tempates are examples of Fixtures.
-Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
-"""
-
 import time
 
 from py4web import action, request, abort, redirect, URL
@@ -95,17 +68,22 @@ def upload_thumbnail():
     return "ok"
 
 @action('load_tasks')
-@action.uses(url_signer.verify(), db)
+@action.uses(url_signer.verify(), auth.user, db)
 def load_tasks():
-    # db(db.auth_user.email == get_user_email()).select().first().id,
-    # db.auth_user.update_or_insert(
-    #     ((db.auth_user.email == get_user_email())),
-    #     bp_xp="1500"
-    # )
-    # user = db(db.auth_user).select().first()
-    # print(user.bp_xp);
+    userid = db(db.auth_user.email == get_user_email()).select().first().id
+    bpxp = 0
+
+    adventurer = db(db.adventurer.userid == userid).select().first()
+    if (adventurer is None):
+        print("adding adventurer")
+        db.adventurer.update_or_insert(
+            ((db.adventurer.userid == userid)),
+            userid=userid,
+        )
+    else:
+        bpxp = adventurer.bpxp
     rows = db(db.task.created_by == request.params.get("id")).select().as_list()
-    return dict(rows=rows)
+    return dict(rows=rows,bpxp=bpxp)
 
 @action('delete_task')
 @action.uses(url_signer.verify(), db)
@@ -116,11 +94,14 @@ def delete_contact():
     return "ok"
 
 @action('set_task', method='POST')
-# remove auth.user
 @action.uses(url_signer.verify(), db)
 def set_task():
     id = request.json.get('id')
     task_done = request.json.get('task_done')
+    bpchange = request.json.get('bpchange')
+
+    userid = db(db.auth_user.email == get_user_email()).select().first().id
+    db(db.adventurer.userid == userid).update(bpxp=bpchange)
 
     db.task.update_or_insert(
         ((db.task.id == id)),
