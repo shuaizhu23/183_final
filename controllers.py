@@ -72,13 +72,14 @@ def upload_thumbnail():
 @action.uses(url_signer.verify(), auth.user, db)
 def load_tasks():
     person = db(db.auth_user.email == get_user_email()).select().first()
-    full_name = person.first_name + " " + person.last_name
     userid = person.id
     bpxp = 0
 
     adventurer = db(db.adventurer.userid == userid).select().first()
     if (adventurer is None):
+        full_name = person.first_name + " " + person.last_name
         # print("adding adventurer ", full_name)
+
         db.adventurer.update_or_insert(
             ((db.adventurer.userid == userid)),
             userid=userid,
@@ -166,21 +167,22 @@ def set_difficulty():
     totalrating += task_difficulty
     # algorithim to determine final rating
     combined_rating = totalrating//(len(rater_list) + 1)
-    print(combined_rating)
+    # print(combined_rating)
 
-    db.rating.update_or_insert(
+    first_rating = db.rating.update_or_insert(
         ((db.rating.task_id == id) & (db.rating.rater == full_name)),
         task_id=id,
         task_difficulty=task_difficulty,
         rater=full_name
     )
+    print(first_rating)
     db(db.task.id == id).update(task_difficulty=combined_rating)
 
     # throw rater a bone
 
     status = None;
     base = db(db.task.id == id).select().first()
-    if (base.created_by != adventurer.userid):
+    if ((base.created_by != adventurer.userid) and (first_rating)):
         db(db.adventurer.userid == userid).update(bpxp=(adventurer.bpxp+5))
         status= "true"
 

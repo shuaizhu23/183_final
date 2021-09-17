@@ -159,6 +159,7 @@ let init = (app) => {
             })
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
+            
             app.vue.bp_xp = response.data.bpxp;
             app.vue.bp_progress = response.data.bpxp/100;
         })
