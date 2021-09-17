@@ -24,8 +24,8 @@ db.define_table(
   Field('task_done', 'boolean', default=False),
   Field('task_img', 'text', default='img/default_task.png'),
   # hidden from user
-  Field('created_by', default=get_uid),
-
+  Field('created_by'),
+  # , default=get_uid
   Field('task_difficulty', 'integer', default=2),
   Field('task_xp', 'integer', default=150),
 )
@@ -42,6 +42,7 @@ db.define_table(
 db.define_table(
     'adventurer',
     Field('userid'),
+    Field('full_name'),
     Field('bpxp', 'integer', default=0),
     Field('rolls', 'integer', default=0),
 )

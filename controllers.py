@@ -5,6 +5,7 @@ from yatl.helpers import A
 from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
+from .models import get_uid
 from py4web.utils.form import Form, FormStyleBulma
 
 url_signer = URLSigner(session)
@@ -32,7 +33,7 @@ def add():
 @action.uses(db, auth.user, 'index.html')
 def index():
     return dict(
-        view_task_id = db(db.auth_user.email == get_user_email()).select().first().id,
+        view_task_id = get_uid(),
         own_page = "true",
         load_tasks_url = URL('load_tasks', signer=url_signer),
         delete_task_url = URL('delete_task', signer=url_signer),
@@ -70,15 +71,18 @@ def upload_thumbnail():
 @action('load_tasks')
 @action.uses(url_signer.verify(), auth.user, db)
 def load_tasks():
-    userid = db(db.auth_user.email == get_user_email()).select().first().id
+    person = db(db.auth_user.email == get_user_email()).select().first()
+    full_name = person.first_name + " " + person.last_name
+    userid = person.id
     bpxp = 0
 
     adventurer = db(db.adventurer.userid == userid).select().first()
     if (adventurer is None):
-        print("adding adventurer")
+        # print("adding adventurer ", full_name)
         db.adventurer.update_or_insert(
             ((db.adventurer.userid == userid)),
             userid=userid,
+            full_name=full_name
         )
     else:
         bpxp = adventurer.bpxp
@@ -100,7 +104,7 @@ def set_task():
     task_done = request.json.get('task_done')
     bpchange = request.json.get('bpchange')
 
-    userid = db(db.auth_user.email == get_user_email()).select().first().id
+    userid = get_uid()
     db(db.adventurer.userid == userid).update(bpxp=bpchange)
 
     db.task.update_or_insert(
@@ -119,8 +123,9 @@ def get_diff_raters():
 
     # couldn't modify py4web form so modify on first check
     row = db(db.rating.task_id == id).select().first()
+    base = db(db.task.id == id).select().first()
+
     if (row is None):
-        base = db(db.task.id == id).select().first()
         person = db(db.auth_user.email == get_user_email()).select().first()
         full_name = person.first_name + " " + person.last_name
         # print(full_name)
@@ -134,7 +139,7 @@ def get_diff_raters():
         raters += full_name
         task_difficulty = base.task_difficulty
     else:
-        task_difficulty = row.task_difficulty
+        task_difficulty = base.task_difficulty
         rater_list = db(db.rating.task_id == id).select().as_list()
         for r in rater_list:
             raters += r['rater'] + ", "
@@ -149,10 +154,19 @@ def get_diff_raters():
 def set_difficulty():
     id = request.json.get('id')
     task_difficulty = request.json.get('task_difficulty')
-    person = db(db.auth_user.email == get_user_email()).select().first()
-    full_name = person.first_name + " " + person.last_name
-    # print(db(db.auth_user.email == get_user_email()).select().first().first_name)
-    # db(db.rating.rater == 1).delete()
+
+    userid = get_uid()
+    adventurer = db(db.adventurer.userid == userid).select().first()
+    full_name = adventurer.full_name
+
+    rater_list = db((db.rating.task_id == id) & (db.rating.rater != full_name)).select().as_list()
+    totalrating = 0;
+    for r in rater_list:
+        totalrating += r['task_difficulty']
+    totalrating += task_difficulty
+    # algorithim to determine final rating
+    combined_rating = totalrating//(len(rater_list) + 1)
+    print(combined_rating)
 
     db.rating.update_or_insert(
         ((db.rating.task_id == id) & (db.rating.rater == full_name)),
@@ -160,7 +174,17 @@ def set_difficulty():
         task_difficulty=task_difficulty,
         rater=full_name
     )
-    return "ok"
+    db(db.task.id == id).update(task_difficulty=combined_rating)
+
+    # throw rater a bone
+
+    status = None;
+    base = db(db.task.id == id).select().first()
+    if (base.created_by != adventurer.userid):
+        db(db.adventurer.userid == userid).update(bpxp=(adventurer.bpxp+5))
+        status= "true"
+
+    return dict(status=status,rating=combined_rating)
 
 @action('edit_task_title', method="POST")
 @action.uses(url_signer.verify(), db)

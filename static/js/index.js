@@ -75,7 +75,12 @@ let init = (app) => {
       let task = app.vue.rows[r_idx];
       task.rating = num_stars;
       // Sets the stars on the server.
-      axios.post(set_difficulty_url, {id: task.id, task_difficulty: num_stars});
+      axios.post(set_difficulty_url, {id: task.id, task_difficulty: num_stars})
+      .then(function (result) {
+          if (result.data.status) {
+            app.vue.bp_xp += 5;
+          }
+      });
     };
 
     // Just handles show and hide stars
