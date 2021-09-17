@@ -24,8 +24,8 @@
 </style>
 
 
-<div class="section" id="vue-target" v-cloak>
-  <div style="display:flex; background-color: #EEE6DD;">
+<div class="section" id="vue-target" style="background-color: #EEE6DD;" v-cloak>
+  <div style="display:flex;">
     <h1 class="title">BP Level 9</h1>
     <div style="margin: 1rem 0 0 2rem;">
       <p>BEP {{bp_xp}}/1000</p>
@@ -42,15 +42,14 @@
 
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5; position: relative;">
       <!-- <p style="font-size: 20px">{{r.task_title}}</p> -->
-      <div class="control" :class="{'is-loading': r._state == 'pending'}">
-        <input type="text" class="input" v-model="r.task_title" style="width: 50%;"
+      <div class="control" :class="{'is-loading': r._state == 'pending'}" style="width: 50%; ">
+        <input type="text" style="font-size: 20px;" class="input" v-model="r.task_title"
              :class="{'is-focused': r._state == 'edit',
                     'is-static': r._state == 'clean'}"
              :readonly="r._state == 'clean'"
              @click="start_edit(r._idx)"
              @blur="stop_edit(r._idx, r.task_title)"
         />
-        <!--      -->
       </div>
       <!-- v-if="r.task_img == 'img/default_task.png'" -->
       <!-- <img v-if="r.thumbnail" width="50" :src="r.thumbnail" /> -->

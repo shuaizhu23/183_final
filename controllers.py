@@ -97,6 +97,13 @@ def upload_thumbnail():
 @action('load_tasks')
 @action.uses(url_signer.verify(), db)
 def load_tasks():
+    # db(db.auth_user.email == get_user_email()).select().first().id,
+    # db.auth_user.update_or_insert(
+    #     ((db.auth_user.email == get_user_email())),
+    #     bp_xp="1500"
+    # )
+    # user = db(db.auth_user).select().first()
+    # print(user.bp_xp);
     rows = db(db.task.created_by == request.params.get("id")).select().as_list()
     return dict(rows=rows)
 
@@ -180,4 +187,5 @@ def edit_task_title():
     id = request.json.get('id')
     value = request.json.get('value')
     db(db.task.id == id).update(task_title = value)
+    time.sleep(1)
     return "ok"

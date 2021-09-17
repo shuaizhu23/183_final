@@ -10,9 +10,8 @@ let init = (app) => {
       done_tasks: 0,
       total_tasks: 0,
       rows: [],
-
-      bp_xp: 500,
-      bp_progress: 50,
+      bp_xp: 0,
+      bp_progress: 0,
     };
 
     // file selected for upload.
@@ -106,24 +105,18 @@ let init = (app) => {
 
     app.start_edit = function (row_idx) {
       app.vue.rows[row_idx]._state = "edit";
-      console.log(app.vue.rows[row_idx]._state);
     };
 
     app.stop_edit = function (row_idx, value) {
       let row = app.vue.rows[row_idx];
-      let rowState = row._state;
-      console.log(rowState, row.task_title, value);
-      if (row.task_title != value) {
-        if (rowState == 'edit') {
-          rowState = "pending";
-          axios.post(edit_task_title_url, {
-              id: row.id, value: value
-          }).then(function (result) {
-              app.vue.rows[row_idx]._state = "clean";
-          })
-        }
-      } else {
-        app.vue.rows[row_idx]._state = "clean";
+      // I don't want to store past state so just let this go
+      if (row._state == 'edit') {
+        app.vue.rows[row_idx]._state = "pending";
+        axios.post(edit_task_title_url, {
+            id: row.id, value: value
+        }).then(function (result) {
+            app.vue.rows[row_idx]._state = "clean";
+        })
       }
       console.log(app.vue.rows[row_idx]._state);
     };
@@ -158,6 +151,7 @@ let init = (app) => {
             })
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
+            app.vue.user = response.data.user;
         })
         // performs function without modifiying or returning anything
         .then(() => {
