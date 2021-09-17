@@ -12,6 +12,7 @@ let init = (app) => {
       rows: [],
       bp_xp: 0,
       bp_progress: 0,
+      bp_level: 0
     };
 
     // file selected for upload.
@@ -159,9 +160,10 @@ let init = (app) => {
             })
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
-            
+
             app.vue.bp_xp = response.data.bpxp;
             app.vue.bp_progress = response.data.bpxp/100;
+            app.vue.bp_level = Math.floor(response.data.bpxp/1000) + 1;
         })
         // performs function without modifiying or returning anything
         .then(() => {

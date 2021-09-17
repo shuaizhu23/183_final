@@ -1,0 +1,15 @@
+.genshin-text {
+  color: #85623F;
+  margin-bottom: 2rem;
+  font-size: 48px;
+  font-weight: 85;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #282C34;
+  border-radius: 9px;
+}
+
+progress::-webkit-progress-value {
+  background-color: #E2B354; !important;
+}

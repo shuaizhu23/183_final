@@ -25,23 +25,23 @@
 
 
 <div class="section" id="vue-target" style="background-color: #EEE6DD;" v-cloak>
-  <div style="display:flex;">
-    <h1 class="title">BP Level 9</h1>
-    <div style="margin: 1rem 0 0 2rem;">
-      <p>BEP {{bp_xp}}/1000</p>
-      <progress id="file" max="100" :value="bp_progress" style="height: 2rem; width: 50rem;"></progress>
+  <div class="container block" style="display:flex;">
+    <h1 style="position:relative; bottom: -2rem;"><span class="genshin-text">BP Level </span><span style="position:relative; bottom:1px;">{{bp_level}}</span></h1>
+    <div style="margin: 1rem 0 0 2rem; background:rgb(245, 245, 245); padding: 10px 10px;">
+      <p>Battlepass XP {{bp_xp}}/1000</p>
+      <progress id="file" max="100" :value="bp_progress" style="height: 2rem; width: 50rem; background:inherit;"></progress>
     </div>
-
   </div>
-  <h1 class="title">Main Tasks {{done_tasks}}/{{total_tasks}}</h1>
   <div class="container block">
-    <a style="margin-bottom: 1.5rem;" class="button is-success" href="[[=URL('add')]]">
-      <span class="icon"><i class="fa fa-plus"></i></span>
-      <span>Add Tasks</span>
-    </a>
-
+    <h1>
+      <span class="genshin-text">Main Tasks </span>
+      <span style="position:relative; bottom:3px;">{{done_tasks}}/{{total_tasks}}</span>
+      <a class="button is-success" href="[[=URL('add')]]" style="margin-top: .5rem; margin-left: 1rem;">
+        <span class="icon"><i class="fa fa-plus"></i></span>
+        <span>Add Tasks</span>
+      </a>
+    </h1>
     <div v-for="r in rows" class="box" style="background-color: #F5F5F5; position: relative;">
-
       <span v-if="r.owned == true">
         <div class="control" :class="{'is-loading': r._state == 'pending'}" style="width: 50%; ">
           <input type="text" style="font-size: 20px;" class="input" v-model="r.task_title"
