@@ -4,7 +4,7 @@
     <base href="[[=URL('static')]]/">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
+    <link rel="shortcut icon" href="../static/img/bp_icon.png"/>
     <link rel="stylesheet" href="css/bulma.css">
     <title>Final Project</title>
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
@@ -14,13 +14,13 @@
     <link href="../static/css/index.css" rel="stylesheet">
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
-  <body>
+  <body style="cursor: url('../static/img/cursor.png'), auto;">
     <!-- Navigation bar -->
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="[[=URL('index')]]">
           Gamified Task List
-          <!-- <img class="logo" width="150" src="images/site_icon.png"> -->
+          <img style="margin-left: 0.5rem;" class="logo" src="../static/img/bp_icon.png">
         </a>
 
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="the-navbar-menu"
@@ -37,7 +37,7 @@
         </div>
         [[if globals().get('user'):]]
           <div class="navbar-item" style="color: white;">
-            <p>[[=globals().get('user').get('email')]]</p>
+            <p style="margin-bottom: 0;">[[=globals().get('user').get('email')]] - UID: [[=globals().get('user').get('id')]]</p>
           </div>
           [[pass]]
           <div class="navbar-item">

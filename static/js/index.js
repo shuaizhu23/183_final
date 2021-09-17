@@ -45,8 +45,15 @@ let init = (app) => {
         app.vue.done_tasks--;
       } else {
         bpchange = app.vue.bp_xp + taskxp;
+        if (bpchange >= 1000) {
+          app.vue.bp_level++;
+          document.getElementById("sound1").play();
+          bpchange -= 1000;
+          app.vue.bp_progress = (bpchange) / 10;
+        } else {
+          app.vue.bp_progress = ((app.vue.bp_progress * 10) + taskxp) / 10;
+        }
         app.vue.bp_xp = bpchange;
-        app.vue.bp_progress = ((app.vue.bp_progress * 10) + taskxp) / 10;
         app.vue.done_tasks++;
       }
       Vue.set(task, 'task_done', !t_bool);
@@ -161,9 +168,11 @@ let init = (app) => {
             app.vue.rows = tasks;
             app.vue.total_tasks = tasks.length;
 
-            app.vue.bp_xp = response.data.bpxp;
-            app.vue.bp_progress = response.data.bpxp/100;
-            app.vue.bp_level = Math.floor(response.data.bpxp/1000) + 1;
+            bp_level = Math.floor(response.data.bpxp/1000) + 1;
+            app.vue.bp_level = bp_level;
+            actualbpxp = response.data.bpxp - ((bp_level-1) * 1000);
+            app.vue.bp_xp = actualbpxp;
+            app.vue.bp_progress = actualbpxp/10;
         })
         // performs function without modifiying or returning anything
         .then(() => {

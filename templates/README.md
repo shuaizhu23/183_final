@@ -4,6 +4,40 @@ You need to connect to your cloud database, and give these commands to
 create the standard tables used by Auth.  You then need to create any
 additional tables you use:
 
+use sampledb;
+show tables;
+describe task;
+
+drop table task;
+
+CREATE TABLE `task`(
+  `id` int(5) PRIMARY KEY AUTO_INCREMENT,
+  `task_title` varchar(255),
+  `task_done` varchar(1),
+  `task_img` TEXT,
+  `created_by` varchar(512),
+  `task_difficulty` int(5),
+  `task_xp` int(5)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `adventurer`(
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `userid` varchar(255),
+  `bpxp` INTEGER,
+  `rolls` INTEGER,
+  `full_name` varchar(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `rating`(
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `task_id` INTEGER REFERENCES `task` (`id`) ON DELETE CASCADE,
+  `task_difficulty` INTEGER,
+  `rater` varchar(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE rating (rater varchar(255));
+CREATE TABLE adventurer (full_name varchar(255));
+
 ```
 CREATE TABLE `auth_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -25,16 +25,17 @@
 
 
 <div class="section" id="vue-target" style="background-color: #EEE6DD;" v-cloak>
+  <audio id="sound1" src="../static/level.m4a" preload="auto"></audio>
   <div class="container block" style="display:flex;">
-    <h1 style="position:relative; bottom: -2rem;"><span class="genshin-text">BP Level </span><span style="position:relative; bottom:1px;">{{bp_level}}</span></h1>
-    <div style="margin: 1rem 0 0 2rem; background:rgb(245, 245, 245); padding: 10px 10px;">
-      <p>Battlepass XP {{bp_xp}}/1000</p>
+    <h1 style="position:relative; bottom: -2rem;"><span class="genshin-text">BP Level: </span><span style="position:relative; bottom:1px;">{{bp_level}}</span></h1>
+    <div style="margin: 1rem 0 0 2rem; background:rgb(245, 245, 245); padding: 10px 30px;">
+      <p>Battlepass XP: {{bp_xp}}/1000</p>
       <progress id="file" max="100" :value="bp_progress" style="height: 2rem; width: 50rem; background:inherit;"></progress>
     </div>
   </div>
   <div class="container block">
     <h1>
-      <span class="genshin-text">Main Tasks </span>
+      <span class="genshin-text">Main Tasks: </span>
       <span style="position:relative; bottom:3px;">{{done_tasks}}/{{total_tasks}}</span>
       <a class="button is-success" href="[[=URL('add')]]" style="margin-top: .5rem; margin-left: 1rem;">
         <span class="icon"><i class="fa fa-plus"></i></span>
@@ -64,7 +65,7 @@
               <input class="file-input" type="file"
                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
                  @change="upload_file($event, r._idx)">
-              <span class="file-cta">
+              <span style="padding-right:13px; padding-left:13px;" class="file-cta">
                 <span class="file-label">
                   <span><i class="fa fa-upload"></i></span>
                 </span>
@@ -74,9 +75,9 @@
         </div>
         <!-- Difficulty Rating-->
         <div style="margin-right: 0.5rem;">
-          <p>Difficulty</p>
+          <p style="margin-bottom:0;">Difficulty:</p>
           <span @mouseout="stars_out(r._idx)">
-            <span @mouseover="stars_over(r._idx, star_idx)"
+            <span style="color: #E2B354;" @mouseover="stars_over(r._idx, star_idx)"
                   @click="set_difficulty(r._idx, star_idx)"
                   v-for="star_idx in [1, 2, 3, 4, 5]">
               <i v-if="star_idx <= r.stars_display" class="fa fa-star"></i>
@@ -85,26 +86,26 @@
           </span>
           <div><p>Rated by {{r.raters}}</p></div>
         </div>
-        <div style="margin-left: auto; display: flex;">
+        <div style="margin-left: auto; display: flex; margin-top: 1rem; margin-right: 5rem;">
           <!-- If score, etc.-->
-          <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 0.5rem;"/>
+          <img width="50" src="img/225.png" style="height: 50px !important; margin-right: 3rem;"/>
           <span v-if="r.owned == true">
             <div>
-              <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:0.5rem;">
+              <button @click="delete_task(r._idx)" class="button is-danger" style="position: absolute; top:1.5rem; background-color: #e54660; padding-right:13px; padding-left:13px; right:1.5rem;">
                   <i class="fa fa-trash"></i>
               </button>
             </div>
             <div @click="set_task(r._idx, r.task_done)" >
-              <i class="fa fa-3x" style="color:green"
-              :class="{'fa-check-square': r.task_done == 1,
-                  'fa-square': r.task_done != 1,}">
+              <i class="fa fa-3x" style="color:green;"
+              :class="{'fa-check-square color-green': r.task_done == 1,
+                  'fa-square color-grey': r.task_done != 1,}">
               </i>
             </div>
           </span>
           <div v-else>
-            <i class="fa fa-3x" style="color:green"
-            :class="{'fa-check-square': r.task_done == 1,
-                'fa-square': r.task_done != 1,}">
+            <i class="fa fa-3x"
+            :class="{'fa-check-square color-green': r.task_done == 1,
+                'fa-square color-grey': r.task_done != 1,}">
             </i>
           </div>
         </div>
