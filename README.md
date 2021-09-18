@@ -9,9 +9,11 @@ The design choice is made to imitate a old reliable notebook kept by an adventur
 There are three main tables in my Database Schema:
 **Adventurer**: stores full name, progress/exp,
 battlepass level
+
 **Tasks**: task_title, task_done, task_img,
 created_by (references user, so a deleted user means his tasks are also wiped)
 , task_difficulty, task_xp
+
 **Ratings**
 task_id (points to task)
 task_difficulty, integer
@@ -19,7 +21,7 @@ rater (points to specific task, so a deleted task will cleanup ratings which now
 
 to minimize databse load I calcualate a lot of things with client side javascript such as bp level by flooring bp xp divided by level xp cap.
 
-each user may have multiple accounts, so they are linked to different adventurers
+One consideration is that each user may have multiple accounts, so they multiple adventurers can be linked to one oauth gmail account.
 
 ## Implementation
 The main component of this app is a card that displays the created task. I needed to create re-usable card for each tasks which displayed all the task information in a clean and intuitive way. I wanted a lot of interactvity in the task card including being able to edit the image, rating, and task title.
@@ -30,4 +32,7 @@ The main collobration aspect is helping your friends decide the relative importa
 
 To access other people's pages I built a pseudo-router in controller.py which uses user id to pull up a user's tasks.
 
-It was challenging to do the entire project by myself based off just lectures and slack, but it was quite rewarding. I made sure to put in small touches to make the task list feel more like an relaxing game rather than just work. However following the design principles I set for myself, I made sure everything was clear while still looking playful.
+**Challenges**
+Throughout doing this project I realized how little I like devops, the latency of waiting for cloud hosts to respond is just the worst. Getting all the database tables pointed in the right direction was also quite challenging and minimizing database calls to accomplish what I wanted to do.
+
+It was challenging to do the project solo based off just lectures and slack, but it was also quite rewarding. I made sure to put in some small touches to make the task list feel more like an relaxing game rather than just work. However following the design principles I set for myself, I made sure everything was clear while still looking playful.
