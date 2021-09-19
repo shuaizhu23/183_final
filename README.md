@@ -5,26 +5,32 @@ I believe one factor to determine the importance of a task is how others perceiv
 
 The design choice is made to imitate a old reliable notebook kept by an adventurer, the user.
 
-## Database:
+## Database Explanation:
 There are three main tables in my Database Schema:
-**Adventurer**: stores full name, progress/exp,
-battlepass level
-
-**Tasks**: task_title, task_done, task_img,
-created_by (references user, so a deleted user means his tasks are also wiped)
-, task_difficulty, task_xp
 
 **Ratings**
 task_id (points to task)
 task_difficulty, integer
 rater (points to specific task, so a deleted task will cleanup ratings which now point to nothing)
 
-to minimize databse load I calcualate a lot of things with client side javascript such as bp level by flooring bp xp divided by level xp cap.
+One consideration is that each user may have multiple accounts, so multiple adventurers can be linked to one oauth gmail account with the userid connection many to one.
 
-One consideration is that each user may have multiple accounts, so they multiple adventurers can be linked to one oauth gmail account.
+**Adventurer**: userid, which points to user and has on delete cascade
+stores full name - to minimize database calls to user table
+progress or xp - level is calculated with this to minimize db calls
+rolls - field for future implementation of slot machine
+
+**Tasks**: task_title,
+task_done,
+task_img,
+task_difficulty,
+task_xp, these fields are critical to represent a task card
+created_by (references user, so a deleted user means his tasks are also wiped)
+
+I calculate a lot of things with client side javascript such as battle pass level by flooring bpxp divided by level xp cap.
 
 ## Implementation
-The main component of this app is a card that displays the created task. I needed to create re-usable card for each tasks which displayed all the task information in a clean and intuitive way. I wanted a lot of interactvity in the task card including being able to edit the image, rating, and task title.
+The main component of this app is a card that displays the created task. I needed to create re-usable card for each tasks which displayed all the task information in a clean and intuitive way. I wanted a lot of interactivity in the task card including being able to edit the image, rating, and task title.
 
 Of course to keep things secure, only the owner of a task is able to edit it. With both checks on client side and signed urls.
 
@@ -35,4 +41,4 @@ To access other people's pages I built a pseudo-router in controller.py which us
 **Challenges**
 Throughout doing this project I realized how little I like devops, the latency of waiting for cloud hosts to respond is just the worst. Getting all the database tables pointed in the right direction was also quite challenging and minimizing database calls to accomplish what I wanted to do.
 
-It was challenging to do the project solo based off just lectures and slack, but it was also quite rewarding. I made sure to put in some small touches to make the task list feel more like an relaxing game rather than just work. However following the design principles I set for myself, I made sure everything was clear while still looking playful.
+It was challenging to do the project solo based off just lectures and slack, but it was also quite rewarding. I made sure to put in some small touches to make the task list feel more like an relaxing game rather than just work. However following the design principles I set for myself, I made sure everything was clear while still looking playful. I had a few more pages designed to interact with the levels that the user earned, but I ran out of time so I just focused on a really polished core experience with the task list.
